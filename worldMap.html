@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <style>
+        svg{
+            background: #efefef;
+        }
+        body{
+            padding :100px;
+        }
+
+        .tooltip {
+        position: absolute;
+        text-align: center;
+        font-size: 0.8em;
+        border-radius: 1em;
+        padding: 1em;
+        pointer-events: none;
+        background-color: #222;
+        color: #fff;
+        }
+
+        .country{
+            fill:#cccccc;
+            stroke: #333333;;
+        }
+        .selected{
+            fill:aquamarine;
+        }
+        </style>
+    </head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
+   
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <script>
+            
+            var yearVisedata={};
+            // d3.csv("https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv",function(data){
+            //         console.log(data[0]);
+            //         var count=0;
+                    
+            //         for(var i=0;i<data.length;i++){
+            //             if(data[i].Year==1977){
+            //                 console.log(count);
+            //                 yearVisedata[count]=data[i];
+            //                 count++;
+            //             }
+            
+            //         }
+
+            //         console.log(yearVisedata);
+            // })
+
+
+
+            const tooltip = d3.select("body").append("div")
+                            .attr("class", "tooltip")
+                            .style("opacity", 0);
+
+
+
+            var margin = { top: 50, right: 50, bottom: 50, left: 50 },
+                width = 800 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
+            
+            var svg = d3.select('body').append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            
+                var f= d3.queue()
+                .defer(d3.json,"https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json")
+                .defer(d3.csv,"concap.csv")
+                .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
+                .await(ready)
+
+                var projection = d3.geoMercator()
+                                .translate([width/2,height/2])
+                                .scale(90);
+
+                var path = d3.geoPath()
+                            .projection(projection);                                
+
+             function ready(error,data,dataset,worldBankData){
+                 var countries = topojson.feature(data,data.objects.countries).features;
+
+                console.log(worldBankData);
+                 var count=0;
+                 var maxValueCo2=0;
+                 for(var i=0;i<worldBankData.length;i++){
+                        if(worldBankData[i].Year==1977){
+                            //console.log(count);
+                            yearVisedata[count]=worldBankData[i];
+                            console.log(worldBankData[i]['CO2 emissions (kt)']);
+                            if(worldBankData[i]['CO2 emissions (kt)']>maxValueCo2){
+                                maxValueCo2=worldBankData[i]['CO2 emissions (kt)'];
+                            }
+                            count++;
+                        }
+            
+                    }
+                console.log(yearVisedata);
+                console.log(maxValueCo2);
+                
+
+                var color =d3.scaleLinear()
+                            .domain([0, maxValueCo2])
+                            .range(["#92c1e8","#3da2f5"]);
+
+
+                 svg.selectAll(".country")
+                 .data(countries)
+                 .enter()
+                    .append("path")
+                    //.attr("class","country")
+                    .attr("d",path)
+                    .attr("fill",function(d,i){
+                        return color(yearVisedata[i]['CO2 emissions (kt)']);
+                    })
+                    .on('mouseover',function(d){
+                         d3.select(this).classed("selected",true)
+                    })
+                    .on('mouseout',function(d){
+                         d3.select(this).classed("selected",false)
+                    });
+
+
+                    svg.selectAll(".city-circle")
+                    .data(dataset)
+                    .enter().append("circle")
+                        .attr("r",2)
+                        .attr("cx",function(d,i){
+                            var coords = projection([d.CapitalLongitude,d.CapitalLatitude])
+                            return coords[0];
+                        })
+                        .attr("cy",function(d){
+                           
+                            var coords = projection([d.CapitalLongitude,d.CapitalLatitude])
+                            return coords[1];
+                        })
+                        .on('mouseover',function(d){
+                         console.log(d.CapitalName);
+                         d3.select(this)
+                            .style("fill", "red")
+                            .style("stroke", "red");
+                            tooltip
+                            .style("opacity", 0.8)
+                            .html(
+                            "Name: " + d.CapitalName 
+                            //  "<br />Mass: " + d.properties.mass +
+                           // "<br />Year: " + d.properties.year.slice(0, 4)
+                                )
+                             .style('left', (d3.event.pageX) + 'px')
+                            .style('top', (d3.event.pageY) + 'px');
+                        })
+                            .on("mouseout", function(d) {
+                            d3.select(this)
+                            .style("stroke", "black")
+                        .style("fill", "black");
+                        tooltip.style("opacity", 0);
+                     });
+             }    
+
+
+
+
+            console.log("above");
+            // d3.csv('https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv', function(rows) {
+            //   console.log(rows);
+            // });
+            console.log("after ");
+        
+        </script>
+    </body>
+</html>
