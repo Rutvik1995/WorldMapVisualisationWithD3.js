@@ -147,7 +147,7 @@
                         return colorScale(colorValue);
                     })
                     .on('mouseover',function(d){
-                         d3.select(this).classed("selected",true)
+                        // d3.select(this).classed("selected",true)
                          var t=d.id;
                          var hoverData=null;
                          console.log(t);
@@ -178,6 +178,8 @@
                     })
                     .on('mouseout',function(d){
                          d3.select(this).classed("selected",false)
+                         d3.select(this)
+                         tooltip.style("opacity", 0);
                          
                     });
 
