@@ -37,6 +37,7 @@
     </head>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
    
     <body>
         <!--[if lt IE 7]>
@@ -46,22 +47,24 @@
         <script>
             
             var yearVisedata={};
+            var checkData=null;
             // d3.csv("https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv",function(data){
-            //         console.log(data[0]);
+            //         //console.log(data[0]);
             //         var count=0;
-                    
-            //         for(var i=0;i<data.length;i++){
-            //             if(data[i].Year==1977){
-            //                 console.log(count);
-            //                 yearVisedata[count]=data[i];
-            //                 count++;
-            //             }
+            //         checkData=data;
+            //         // for(var i=0;i<data.length;i++){
+            //         //     if(data[i].Year==1977){
+            //         //         //console.log(count);
+            //         //         yearVisedata[count]=data[i];
+            //         //         count++;
+            //         //     }
             
-            //         }
+            //         // }
 
-            //         console.log(yearVisedata);
+            //         //console.log(yearVisedata);
             // })
-
+            
+            console.log(checkData);
 
 
             const tooltip = d3.select("body").append("div")
@@ -81,7 +84,7 @@
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
             
                 var f= d3.queue()
-                .defer(d3.json,"https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json")
+                .defer(d3.json,"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
                 .defer(d3.csv,"concap.csv")
                 .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
                 .await(ready)
@@ -93,17 +96,15 @@
                 var path = d3.geoPath()
                             .projection(projection);                                
 
-             function ready(error,data,dataset,worldBankData){
-                 var countries = topojson.feature(data,data.objects.countries).features;
+             function ready(error,topo,dataset,worldBankData){
+               
 
                 console.log(worldBankData);
                  var count=0;
                  var maxValueCo2=0;
                  for(var i=0;i<worldBankData.length;i++){
-                        if(worldBankData[i].Year==1977){
-                            //console.log(count);
+                        if(worldBankData[i].Year==1997){
                             yearVisedata[count]=worldBankData[i];
-                            console.log(worldBankData[i]['CO2 emissions (kt)']);
                             if(worldBankData[i]['CO2 emissions (kt)']>maxValueCo2){
                                 maxValueCo2=worldBankData[i]['CO2 emissions (kt)'];
                             }
@@ -116,61 +117,105 @@
                 
 
                 var color =d3.scaleLinear()
-                            .domain([0, maxValueCo2])
-                            .range(["#92c1e8","#3da2f5"]);
+                            .domain([3, maxValueCo2])
+                            .range(["#eba7ac","#9e242d"]);
+
+                            var colorScale = d3.scaleThreshold()
+                                .domain([1000, 10000, 100000, 300000, 1000000, 5000000])
+                                .range(d3.schemeBlues[7]);
+
 
 
                  svg.selectAll(".country")
-                 .data(countries)
+                 .data(topo.features)
                  .enter()
                     .append("path")
                     //.attr("class","country")
                     .attr("d",path)
                     .attr("fill",function(d,i){
-                        return color(yearVisedata[i]['CO2 emissions (kt)']);
+                        var t=d.id;
+                        var colorValue=null;
+                        for(var i=0;i<worldBankData.length;i++){
+                            if(worldBankData[i].Year==1997){
+                                if(worldBankData[i]['Country Code']==t){
+                                    colorValue=worldBankData[i]['CO2 emissions (kt)'];
+                                }
+                            }
+                        }
+                        console.log(colorValue);
+                        //return color(colorValue);
+                        return colorScale(colorValue);
                     })
                     .on('mouseover',function(d){
                          d3.select(this).classed("selected",true)
+                         var t=d.id;
+                         var hoverData=null;
+                         console.log(t);
+                            for(var i=0;i<worldBankData.length;i++){
+                                //console.log(worldBankData[i]['Country Code']);
+                                 if(worldBankData[i].Year==1997){
+                                     if(worldBankData[i]['Country Code']==t){
+                                     console.log("yes");
+                                     console.log(worldBankData[i]);
+                                     hoverData=worldBankData[i];
+                                     console.log(hoverData);
+                                     tooltip
+                                    .style("opacity", 0.8)
+                                    .html("Name: " + hoverData['Country Name'] +
+                                    "<br />Co2 Emission: " + hoverData['CO2 emissions (kt)']
+                                    
+                                      )
+                                    .style('left', (d3.event.pageX) + 'px')
+                                     .style('top', (d3.event.pageY) + 'px');
+                                     }
+                                    
+                                 }
+                                 console.log
+                                    
+
+                            
+                            }
                     })
                     .on('mouseout',function(d){
                          d3.select(this).classed("selected",false)
+                         
                     });
 
 
-                    svg.selectAll(".city-circle")
-                    .data(dataset)
-                    .enter().append("circle")
-                        .attr("r",2)
-                        .attr("cx",function(d,i){
-                            var coords = projection([d.CapitalLongitude,d.CapitalLatitude])
-                            return coords[0];
-                        })
-                        .attr("cy",function(d){
+                    // svg.selectAll(".city-circle")
+                    // .data(dataset)
+                    // .enter().append("circle")
+                    //     .attr("r",2)
+                    //     .attr("cx",function(d,i){
+                    //         var coords = projection([d.CapitalLongitude,d.CapitalLatitude])
+                    //         return coords[0];
+                    //     })
+                    //     .attr("cy",function(d){
                            
-                            var coords = projection([d.CapitalLongitude,d.CapitalLatitude])
-                            return coords[1];
-                        })
-                        .on('mouseover',function(d){
-                         console.log(d.CapitalName);
-                         d3.select(this)
-                            .style("fill", "red")
-                            .style("stroke", "red");
-                            tooltip
-                            .style("opacity", 0.8)
-                            .html(
-                            "Name: " + d.CapitalName 
-                            //  "<br />Mass: " + d.properties.mass +
-                           // "<br />Year: " + d.properties.year.slice(0, 4)
-                                )
-                             .style('left', (d3.event.pageX) + 'px')
-                            .style('top', (d3.event.pageY) + 'px');
-                        })
-                            .on("mouseout", function(d) {
-                            d3.select(this)
-                            .style("stroke", "black")
-                        .style("fill", "black");
-                        tooltip.style("opacity", 0);
-                     });
+                    //         var coords = projection([d.CapitalLongitude,d.CapitalLatitude])
+                    //         return coords[1];
+                    //     })
+                    //     .on('mouseover',function(d){
+                    //      console.log(d.CapitalName);
+                    //      d3.select(this)
+                    //         .style("fill", "red")
+                    //         .style("stroke", "red");
+                    //         tooltip
+                    //         .style("opacity", 0.8)
+                    //         .html(
+                    //         "Name: " + d.CapitalName 
+                    //         //  "<br />Mass: " + d.properties.mass +
+                    //         // "<br />Year: " + d.properties.year.slice(0, 4)
+                    //             )
+                    //          .style('left', (d3.event.pageX) + 'px')
+                    //         .style('top', (d3.event.pageY) + 'px');
+                    //     })
+                    //         .on("mouseout", function(d) {
+                    //         d3.select(this)
+                    //         .style("stroke", "black")
+                    //     .style("fill", "black");
+                    //     tooltip.style("opacity", 0);
+                    //  });
              }    
 
 
