@@ -174,7 +174,7 @@
                     svg.selectAll(".city-circle")
                     .data(dataset)
                     .enter().append("circle")
-                        .attr("r",5)
+                        .attr("r",7)
                         .attr("cx",function(d){
                             var coords = projection([d.CapitalLongitude,d.CapitalLatitude])
                             return coords[0];
@@ -204,8 +204,23 @@
                         .style("stroke", "black")
                         .style("fill", "black");
                         tooltip.style("opacity", 0);
+                     })
+                     .transition()
+                     .delay(2000)
+                     .on("start", function repeat() {
+                     d3.active(this)
+                     .style("fill", "red")
+                     .transition()
+                     .style("fill", "green")
+                     .transition()
+                     .style("fill", "blue")
+                     .transition()
+                     .on("start", repeat);
                      });
-             }           
+            
+              }
+             
+                         
              
         </script>
     </body>
