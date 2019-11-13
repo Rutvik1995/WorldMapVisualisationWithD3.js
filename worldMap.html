@@ -231,8 +231,6 @@
                             .style("opacity", 0.8)
                             .html(
                             "Name: " + d.CapitalName + "<br>" + yearVisedata[i]
-                            //  "<br />Mass: " + d.properties.mass +
-                           // "<br />Year: " + d.properties.year.slice(0, 4)
                                 )
                              .style('left', (d3.event.pageX) + 'px')
                             .style('top', (d3.event.pageY) + 'px');
@@ -244,14 +242,15 @@
                         tooltip.style("opacity", 0);
                      })
                      .transition()
-                     .delay(2000)
+                     .delay(5000)
                      .on("start", function repeat() {
                      d3.active(this)
                      .style("fill", "red")
+                     .attr("opacity",1.0)
                      .transition()
-                     .style("fill", "green")
-                     .transition()
-                     .style("fill", "blue")
+                     .delay(5000)
+                     .style("fill", "red")
+                     .attr("opacity",0)
                      .transition()
                      .on("start", repeat);
                      });
