@@ -71,7 +71,10 @@
   cursor: pointer;
 }
 
-
+.map{
+    margin-top: -70px;
+    margin-left: -50px;
+}
 
 
     </style>
@@ -79,9 +82,15 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-   
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <body>
-            
+        
+       
+          
+        
+        <div class="map">
+                <h2 class="text-center">World Climate Change</h2>
+        </div>
             <p> Year </p>
             <input id="yr" type="range" min="1967" max="2012" step="3" value="1967" class="slider" />
             <output id = "yrdemo" value="1970"></output><br>
@@ -123,7 +132,7 @@
                 width = 800 - margin.left - margin.right,
                 height = 400 - margin.top - margin.bottom;
             
-            var svg = d3.select('body').append('svg')
+            var svg = d3.select('.map').append('svg')
                 .attr('width', width + margin.left + margin.right)
                 .attr('height', height + margin.top + margin.bottom)
                 .append('g')
