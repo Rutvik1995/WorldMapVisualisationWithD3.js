@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <style>
+        svg{
+            background: #efefef;
+        }
+        body{
+            padding :100px;
+        }
+
+        .tooltip {
+        position: absolute;
+        text-align: center;
+        font-size: 0.8em;
+        border-radius: 1em;
+        padding: 1em;
+        pointer-events: none;
+        background-color: #222;
+        color: #fff;
+        }
+
+        .country{
+            fill:#cccccc;
+            stroke: #333333;;
+        }
+        .selected{
+            fill:aquamarine;
+        }
+        .slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+
+
+
+    </style>
+    </head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+   
+    <body>
+            
+            <p> Year </p>
+            <input id="yr" type="range" min="1967" max="2012" step="3" value="1967" class="slider" />
+            <output id = "yrdemo" value="1970"></output><br>
+
+
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <script>
+              var year=2012;
+             var output_year = document.getElementById("yrdemo");
+             console.log(output_year);
+            var yearVisedata={};
+            document.getElementById("yr").addEventListener("change", function() {
+                console.log("slider change");
+                output_year.value=this.value;
+                year=this.value;
+                
+            d3.queue()
+            .defer(d3.json,"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+                .defer(d3.csv,"concap.csv")
+                .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
+                .await(ready)
+               
+           
+            });
+            
+            var yearVisedata=[];
+
+
+            const tooltip = d3.select("body").append("div")
+                            .attr("class", "tooltip")
+                            .style("opacity", 0);
+
+
+
+            var margin = { top: 50, right: 50, bottom: 50, left: 50 },
+                width = 800 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
+            
+            var svg = d3.select('body').append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            
+                var projection = d3.geoMercator()
+                                .translate([width/2,height/2])
+                                .scale(90);
+
+                var path = d3.geoPath()
+                            .projection(projection);     
+
+                var f= d3.queue()
+                .defer(d3.json,"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+                .defer(d3.csv,"concap.csv")
+                .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
+                .await(ready)
+
+                          var yearVisedata=[];    
+
+             function ready(error,topo,dataset,worldBankData){
+               
+
+                console.log(worldBankData);
+                 var count=0;
+                 var maxValueCo2=0;
+                 var countries = topo.features;
+                 console.log(year);
+                 for(var i=0;i<worldBankData.length;i++){
+                        if(worldBankData[i].Year==year){
+                                //console.log(worldBankData[i]['CO2 emissions (kt)']);
+                            if(worldBankData[i]['CO2 emissions (kt)']>maxValueCo2){
+                                maxValueCo2=worldBankData[i]['CO2 emissions (kt)'];
+                            }
+                            count++;
+                        }
+            
+                    }
+                console.log(yearVisedata);
+                console.log(maxValueCo2);
+                
+
+                var color =d3.scaleLinear()
+                            .domain([3, maxValueCo2])
+                            .range(["#eba7ac","#9e242d"]);
+
+                            var colorScale = d3.scaleThreshold()
+                                .domain([1000, 10000, 100000, 300000, 1000000, 5000000])
+                                .range(d3.schemeBlues[7]);
+
+
+
+                 svg.selectAll(".country")
+                 .data(countries)
+                 .enter()
+                    .append("path")
+                    //.attr("class","country")
+                    .attr("d",path)
+                    .attr("fill",function(d,i){
+                        var t=d.id;
+                        var colorValue=null;
+                        for(var i=0;i<worldBankData.length;i++){
+                            if(worldBankData[i].Year==year){
+                                if(worldBankData[i]['Country Code']==t){
+                                    colorValue=worldBankData[i]['CO2 emissions (kt)'];
+                                }
+                            }
+                        }
+                       // console.log(colorValue);
+                        //return color(colorValue);
+                        return colorScale(colorValue);
+                    })
+                    .on('mouseover',function(d){
+                        // d3.select(this).classed("selected",true)
+                         var t=d.id;
+                         var hoverData=null;
+                         console.log(t);
+                            for(var i=0;i<worldBankData.length;i++){
+                                //console.log(worldBankData[i]['Country Code']);
+                                 if(worldBankData[i].Year==year){
+                                     if(worldBankData[i]['Country Code']==t){
+                                     console.log("yes");
+                                     console.log(worldBankData[i]);
+                                     hoverData=worldBankData[i];
+                                     console.log(hoverData);
+                                     tooltip
+                                    .style("opacity", 0.8)
+                                    .html("Name: " + hoverData['Country Name'] +
+                                    "<br />Co2 Emission: " + hoverData['CO2 emissions (kt)']
+                                    
+                                      )
+                                    .style('left', (d3.event.pageX) + 'px')
+                                     .style('top', (d3.event.pageY) + 'px');
+                                     }
+                                    
+                                 }
+                                 console.log
+                                    
+
+                            
+                            }
+                    })
+                    .on('mouseout',function(d){
+                         d3.select(this).classed("selected",false)
+                         d3.select(this)
+                         tooltip.style("opacity", 0);
+                         
+                    });
+             }    
+
+
+
+
+            console.log("above");
+            // d3.csv('https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv', function(rows) {
+            //   console.log(rows);
+            // });
+            console.log("after ");
+        
+        </script>
+    </body>
+</html>
