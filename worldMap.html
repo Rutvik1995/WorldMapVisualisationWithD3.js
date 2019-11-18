@@ -11,9 +11,8 @@
         svg{
             background: #efefef;
         }
-        body{
-            padding :100px;
-        }
+
+
 
         .tooltip {
         position: absolute;
@@ -39,7 +38,7 @@
 
 .slider {
   -webkit-appearance: none;
-  width: 100%;
+ 
   height: 8px;
   border-radius: 5px;
   background: #d3d3d3;
@@ -47,6 +46,7 @@
   opacity: 0.7;
   -webkit-transition: .2s;
   transition: opacity .2s;
+  width: 100px;
 }
 
 .slider:hover {
@@ -73,11 +73,12 @@
 
 .map{
     /* margin-top: -70px; */
-    margin-left: -90px;
+   
 }
 .slider-position{
-    margin-left: -90px;
+   
 }
+
 
 /* select {
   -webkit-appearance: none;
@@ -192,63 +193,76 @@ label[for=favcity] select:focus {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <body>
-            <h2 class="text-center">World Climate Change</h2>
-            <br>
+                 
+        <!-- <div class="bg-info clearfix">
+            <button type="button" class="btn btn-secondary float-left">Example Button floated left</button>
+            <button type="button" class="btn btn-secondary float-right">Example Button floated right</button>
+          </div> -->
+            <!-- <h2 class="text-center">World Climate Change</h2> -->
+            <!-- <br> -->
             <!-- <input type="button" class="btn btn-info" value="View Animation" onclick="addInterval()"> -->
-           
-                    <div class="row">
-                      <div class="col-sm">
-                            <button type="button" class="btn btn-primary btn-sm" onclick="addInterval()" >Start Animation</button>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="StopInterval()" >Stop Animation</button>
-                            <label for="favcity">
-                                    <select  id="mySelect" name="slct"  onchange="myFunction()">
-                                    <option selected value="CO2 emissions (kt)">CO2 emissions</option>
-                                    <option value="Methane emissions (kt of CO2 equivalent)">Methane emissions</option>
-                                    <option value="Nitrous oxide emissions (thousand metric tons of CO2 equivalent)"> Nitrous oxide emissions</option>
-                                    <option value="Total greenhouse gas emissions (kt of CO2 equivalent)">Total greenhouse gas</option>
-                                    <option value="Population, total">Total Population</option>
-                                    </select>
-                                  </label>
-                      </div>
-                      <div class="col-sm">
-                           
-                      </div>
-                    </div>
-            <br>
+            
+            <hr>
+            <div>
 
-
-
-        <br>
-        <div class="slider-position" id="slider-section">
-                <p> Year </p>
-                <input id="yr" type="range" min="1992" max="2012" step="1" value="1967" class="slider"  style="width: 800px"/>
+            </div>
+            <div class="row displayElement">
+              <div class="col-sm-3" >
+                  <label for="favcity">
+                      <select  id="mySelect" name="slct"  onchange="myFunction()">
+                      <option selected value="CO2 emissions (kt)">CO2 emissions</option>
+                      <option value="Methane emissions (kt of CO2 equivalent)">Methane emissions</option>
+                      <option value="Nitrous oxide emissions (thousand metric tons of CO2 equivalent)"> Nitrous oxide emissions</option>
+                      <option value="Total greenhouse gas emissions (kt of CO2 equivalent)">Total greenhouse gas</option>
+                      <option value="Population, total">Total Population</option>
+                      </select>
+              </label>
+              </div>
+              <div class="col-sm-3">
+                  <button type="button" class="btn btn-primary btn-sm" onclick="addInterval()" >Start Animation</button>
+                  <!-- <button type="button" class="btn btn-danger btn-sm" onclick="StopInterval()" >Stop Animation</button> -->
+                  <b><span  id="animationSpan" style="display: none; font-size: 30px; font-style: italic;"></span>
+                    </b>
+              </div>
+            </div>
+            <div class="map">
+            </div>
+            
+            <div class="slider-position" id="slider-section">
+                <input id="yr" type="range" min="1992" max="2012" step="1" value="1967" class="slider"  style="width: 700px"/>
                 <output id = "yrdemo" value="1992">1992</output><br>
-        </div>
-        <div class="map">
-        </div>
-
-       
+                
+             </div>
+             <div class="piechart"></div>
+             <div class="barchart"></div>
 
 
 
 
 
         <script>
-
+            var number = 123;
             var year=1992;
+            var timeInterval;
             var downDownValue='CO2 emissions (kt)';
              var output_year = document.getElementById("yrdemo");
              var toolTipValue='CO2 emissions (kt)';
-             console.log(output_year);
+             //console.log(output_year);
             var yearVisedata={};
-
-           
             var yearAuto=1991;
             function trig() {  
                 yearAuto++;
+                document.getElementById("animationSpan").innerHTML = yearAuto;
                 if(yearAuto>=2012){
                     document.getElementById("yr").style.display="block";
+                    document.getElementById("yrdemo").style.display="block";
+                    document.getElementById("animationSpan").style.display="none";
+                    clearInterval(timeInterval);
+                    yearAuto=1991;
                     return;
                 }
                 year=yearAuto;
@@ -261,15 +275,18 @@ label[for=favcity] select:focus {
            
             function addInterval(){
                 document.getElementById("yr").style.display="none";
+                document.getElementById("yrdemo").style.display="none";
+                document.getElementById("animationSpan").style.display="block";
                 
-                var i = setInterval(function() { trig(); }, 200);
+                timeInterval = setInterval(function() { trig(); }, 200);
             }
             function StopInterval(){
                 document.getElementById("yr").style.display="block";
+
             }
 
             function changeSlider(){
-                console.log("trigger");
+               // console.log("trigger");
 
             }
 
@@ -294,7 +311,7 @@ label[for=favcity] select:focus {
                  downDownValue = document.getElementById("mySelect").value;
                  yearAuto=1991;
               
-               console.log(downDownValue);
+             //  console.log(downDownValue);
                if(downDownValue=='CO2 emissions (kt)'){
                 toolTipValue='CO2 emissions (kt)';
                }
@@ -324,8 +341,8 @@ label[for=favcity] select:focus {
                             .attr("class", "tooltip")
                             .style("opacity", 0);
 
-            var margin = { top: 50, right: 50, bottom: 50, left: 50 },
-                width = 800 - margin.left - margin.right,
+            var margin = { top: 50, right: 50, bottom: 50, left: 0 },
+                width = 700 - margin.left - margin.right,
                 height = 400 - margin.top - margin.bottom;
             
             var svg = d3.select('.map').append('svg')
@@ -350,11 +367,11 @@ label[for=favcity] select:focus {
                 var yearVisedata=[];    
 
              function ready(error,topo,dataset,worldBankData){
-               
+              renderPieChart(worldBankData);
                  var count=0;
                  var maxValueCo2=0;
                  var countries = topo.features;
-                 console.log(year);
+               //  console.log(year);
                  for(var i=0;i<worldBankData.length;i++){
                         if(worldBankData[i].Year==year){
                             if(worldBankData[i][downDownValue]>maxValueCo2){
@@ -392,7 +409,7 @@ label[for=favcity] select:focus {
                     .on('mouseover',function(d){
                          var t=d.id;
                          var hoverData=null;
-                         console.log(t);
+                        // console.log(t);
                             for(var i=0;i<worldBankData.length;i++){
                                  if(worldBankData[i].Year==year){
                                      if(worldBankData[i]['Country Code']==t){
@@ -421,12 +438,345 @@ label[for=favcity] select:focus {
                     });
              }    
 
+             function renderPieChart(worldBankData) {
+              document.getElementsByClassName("piechart")[0].innerHTML = "";
+        //console.log("rendering pie chart");
+        let nonCountryArray = [
+          "East Asia & Pacific (excluding high income)",
+          "East Asia & Pacific (IDA & IBRD countries)",
+          "Early-demographic dividend",
+          "element Middle East & North Africa (IDA & IBRD countries)",
+          "Europe & Central Asia (IDA & IBRD countries)",
+          "East Asia & Pacific",
+          "IBRD only",
+          "Late-demographic dividend",
+          "Latin America & Caribbean (excluding high income)",
+          "Middle East & North Africa (excluding high income)",
+          "Middle East & North Africa (IDA & IBRD countries)",
+          "Pacific island small states",
+          "Sub-Saharan Africa (IDA & IBRD countries)",
+          "Upper middle income",
+          "Central Europe and the Baltics",
+          "Europe & Central Asia (excluding high income)",
+          "Europe & Central Asia",
+          "Fragile and conflict affected situations",
+          "Heavily indebted poor countries (HIPC)",
+          "High income",
+          "IDA & IBRD total",
+          "Low & middle income",
+          "Middle income",
+          "OECD members",
+          "Post-demographic dividend",
+          "Pre-demographic dividend",
+          "Sub-Saharan Africa (excluding high income)",
+          "Caribbean small states",
+          "Least developed countries: UN classification",
+          "South Asia (IDA & IBRD)",
+          "South Asia",
+          "Latin America & the Caribbean (IDA & IBRD countries)",
+          "Latin America & Caribbean",
+          "Low income",
+          "European Union",
+          "World",
+          "Lower middle income",
+          "Middle East & North Africa",
+          "Euro area",
+          "Arab World",
+          "IDA total",
+          "Sub-Saharan Africa",
+          "IDA blend",
+          "IDA only",
+          "Small states",
+          "Other small states"
+        ];
+        // let sortIndex = "Country Name";
+        let sortIndex = downDownValue;
+        let sortedWorldBankData = [];
+        // sortedWorldBankData = worldBankData.slice().sort((a, b) => d3.descending(a[sortIndex], b[sortIndex]));
+        sortedWorldBankData = worldBankData
+          .slice()
+          .sort((a, b) =>
+            d3.descending(parseInt(a[sortIndex]), parseInt(b[sortIndex]))
+          );
+        // for each element in worldBankData if the country name is in nonCountyArrays[] do not add it to cleaned array
+        // console.log(year);
+        cleanedWorldBankData = [];
+        sortedWorldBankData.forEach(element => {
+          // console.log(element["Year"]);
+          if (
+            element["Year"] == year &&
+            !nonCountryArray.includes(element["Country Name"])
+          ) {
+            // console.log(element["Country Name"]);
+            return cleanedWorldBankData.push(element); // filter remove
+          }
+        });
+        //console.log("cleanedWorldBankData");
+        //console.log(cleanedWorldBankData);
+        //console.log("sortedWorldBankData");
+        // console.log(sortedWorldBankData);
+        var data = [
+          // { name: "USA", value: 60 },
+          // { name: "UK", value: 20 },
+          // { name: "Canada", value: 30 },
+          // { name: "Maxico", value: 15 },
+          // { name: "Japan", value: 10 }
+        ];
+        // push top 10 values in data
+        for (i = 0; i < 10; i++) {
+        
+          data.push({
+            name: cleanedWorldBankData[i]["Country Name"],
+            value: cleanedWorldBankData[i][sortIndex]
+          });
+        }
+       // console.log(data);
+        renderBarChart(data);
+        var text = "";
+        var width = 200;
+        var height = 200;
+        var thickness = 40;
+        var duration = 750;
+        var padding = 10;
+        var opacity = 0.8;
+        var opacityHover = 1;
+        var otherOpacityOnHover = 0.8;
+        var tooltipMargin = 13;
+        var radius = Math.min(width - padding, height - padding) / 2;
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+        var svg = d3
+          .select(".piechart")
+          .append("svg")
+          .attr("class", "pie")
+          .attr("width", width)
+          .attr("height", height);
+        var g = svg
+          .append("g")
+          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        var arc = d3
+          .arc()
+          .innerRadius(0)
+          .outerRadius(radius);
+        var pie = d3
+          .pie()
+          .value(function(d) {
+            return d.value;
+          })
+          .sort(null);
+        var path = g
+          .selectAll("path")
+          .data(pie(data))
+          .enter()
+          .append("g")
+          .append("path")
+          .attr("d", arc)
+          .attr("fill", (d, i) => color(i))
+          .style("opacity", opacity)
+          .style("stroke", "white")
+          .on("mouseover", function(d) {
+            d3.selectAll("path").style("opacity", otherOpacityOnHover);
+            d3.select(this).style("opacity", opacityHover);
+            let g = d3
+              .select("svg")
+              .style("cursor", "pointer")
+              .append("g")
+              .attr("class", "tooltip")
+              .style("opacity", 0);
+            g.append("text")
+              .attr("class", "name-text")
+              .text(`${d.data.name} (${d.data.value})`)
+              .attr("text-anchor", "middle");
+            let text = g.select("text");
+            let bbox = text.node().getBBox();
+            let padding = 2;
+            g.insert("rect", "text")
+              .attr("x", bbox.x - padding)
+              .attr("y", bbox.y - padding)
+              .attr("width", bbox.width + padding * 2)
+              .attr("height", bbox.height + padding * 2)
+              .style("fill", "white")
+              .style("opacity", 0.75);
+          })
+          .on("mousemove", function(d) {
+            let mousePosition = d3.mouse(this);
+            let x = mousePosition[0] + width / 2;
+            let y = mousePosition[1] + height / 2 - tooltipMargin;
+            let text = d3.select(".tooltip text");
+            let bbox = text.node().getBBox();
+            if (x - bbox.width / 2 < 0) {
+              x = bbox.width / 2;
+            } else if (width - x - bbox.width / 2 < 0) {
+              x = width - bbox.width / 2;
+            }
+            if (y - bbox.height / 2 < 0) {
+              y = bbox.height + tooltipMargin * 2;
+            } else if (height - y - bbox.height / 2 < 0) {
+              y = height - bbox.height / 2;
+            }
+            d3.select(".tooltip")
+              .style("opacity", 1)
+              .attr("transform", `translate(${x}, ${y})`);
+          })
+          .on("mouseout", function(d) {
+            d3.select("svg")
+              .style("cursor", "none")
+              .select(".tooltip")
+              .remove();
+            d3.selectAll("path").style("opacity", opacity);
+          })
+          .on("touchstart", function(d) {
+            d3.select("svg").style("cursor", "none");
+          })
+          .each(function(d, i) {
+            this._current = i;
+          });
+        let legend = d3
+          .select("#chart")
+          .append("div")
+          .attr("class", "legend")
+          .style("margin-top", "30px");
+        let keys = legend
+          .selectAll(".key")
+          .data(data)
+          .enter()
+          .append("div")
+          .attr("class", "key")
+          .style("display", "flex")
+          .style("align-items", "center")
+          .style("margin-right", "20px");
+        keys
+          .append("div")
+          .attr("class", "symbol")
+          .style("height", "10px")
+          .style("width", "10px")
+          .style("margin", "5px 5px")
+          .style("background-color", (d, i) => color(i));
+        keys
+          .append("div")
+          .attr("class", "name")
+          .text(d => `${d.name} (${d.value})`);
+        keys.exit().remove();
+             }
+             function renderBarChart(data) {
+        document.getElementsByClassName("barchart")[0].innerHTML = '';
+        const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+        const width = 960 - margin.left - margin.right;
+        const height = 900 - margin.top - margin.bottom;
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+        const xScale = d3
+          .scaleBand()
+          .range([0, width])
+          .round(true)
+          .paddingInner(0.1); // space between bars (it's a ratio)
+        const yScale = d3.scaleLinear().range([height, 0]);
+        const xAxis = d3.axisBottom().scale(xScale);
+        const yAxis = d3
+          .axisLeft()
+          .scale(yScale)
+          .ticks(10);
+            
+        const svg = d3
+          .select(".barchart")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", `translate(${margin.left}, ${margin.right})`);
+        const tooltip = d3
+          .select(".barchart")
+          .append("div")
+          .attr("class", "tooltip")
+          .style("opacity", 0);
+        xScale.domain(data.map(d => d.name));
+        yScale.domain([0, d3.max(data, d => d.value)]);
+        svg
+          .append("g")
+          .attr("class", "x axis")
+          .attr("transform", `translate(0, ${height})`)
+          .call(xAxis);
+        svg
+          .append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Frequency");
+        svg
+          .selectAll(".bar")
+          .data(data)
+          .enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("x", d => xScale(d.name))
+          .attr("width", xScale.bandwidth())
+          .attr("y", d => yScale(d.value/14))
+          .attr("height", d => (height-yScale(d.value/14)))
+          .attr("fill",(d, i) => color(i))
+          .on("mouseover", d => {
+            tooltip
+              .transition()
+              .duration(200)
+              .style("opacity", 0.9);
+            tooltip
+              .html(`Frequency: <span>${d.value}</span>`)
+              .style("left", `${d3.event.layerX}px`)
+              .style("top", `${d3.event.layerY - 28}px`);
+          })
+          .on("mouseout", () =>
+            tooltip
+              .transition()
+              .duration(500)
+              .style("opacity", 0)
+          );
+      }
 
-
-
-            console.log("above");
-            console.log("after ");
+           // console.log("above");
+            //console.log("after ");
         
         </script>
+        <style>
+      .bar {
+        {% comment %} fill: #4682b4; {% endcomment %}
+      }
+      .bar:hover {
+        {% comment %} fill: #17bf3c; {% endcomment %}
+      }
+      .axis {
+        font-family: "Lobster";
+        font-size: 12px;
+      }
+      .axis path,
+      .axis line {
+        fill: none;
+        shape-rendering: crispEdges;
+        stroke: #000;
+      }
+      .x.axis path {
+        display: none;
+      }
+      .y.axis text {
+        fill: #000;
+      }
+      /* .tooltip {
+       
+        border: 0;
+        border-radius: 8px;
+        font-family: "Lobster";
+        font-size: 12px;
+        font-weight: bold;
+        height: 20px;
+        padding: 2px;
+        pointer-events: none;
+        position: absolute;
+        text-align: center;
+        width: 120px;
+      } */
+      .tooltip span {
+        color: #d11515;
+      }
+    </style>
     </body>
 </html>
