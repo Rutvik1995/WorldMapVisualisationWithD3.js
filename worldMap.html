@@ -20,7 +20,7 @@
         text-align: center;
         font-size: 0.8em;
         border-radius: 1em;
-        padding: 1em;
+        padding: 0.8em;
         pointer-events: none;
         background-color: #222;
         color: #fff;
@@ -40,7 +40,7 @@
 .slider {
   -webkit-appearance: none;
   width: 100%;
-  height: 15px;
+  height: 8px;
   border-radius: 5px;
   background: #d3d3d3;
   outline: none;
@@ -56,8 +56,8 @@
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #4CAF50;
   cursor: pointer;
@@ -73,7 +73,10 @@
 
 .map{
     margin-top: -70px;
-    margin-left: -50px;
+    margin-left: -90px;
+}
+.slider-position{
+    margin-left: -90px;
 }
 
 
@@ -90,10 +93,16 @@
         
         <div class="map">
                 <h2 class="text-center">World Climate Change</h2>
+               <br/>
         </div>
-            <p> Year </p>
-            <input id="yr" type="range" min="1967" max="2012" step="3" value="1967" class="slider" />
-            <output id = "yrdemo" value="1970"></output><br>
+        <br>
+
+        <div class="slider-position">
+                <p> Year </p>
+                <input id="yr" type="range" min="1967" max="2012" step="1" value="1967" class="slider"  style="width: 800px"/>
+                <output id = "yrdemo" value="1970"></output><br>
+        </div>
+       
 
 
         <!--[if lt IE 7]>
@@ -156,7 +165,7 @@
              function ready(error,topo,dataset,worldBankData){
                
 
-                console.log(worldBankData);
+              
                  var count=0;
                  var maxValueCo2=0;
                  var countries = topo.features;
@@ -171,8 +180,7 @@
                         }
             
                     }
-                console.log(yearVisedata);
-                console.log(maxValueCo2);
+             
                 
 
                 var color =d3.scaleLinear()
