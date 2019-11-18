@@ -79,7 +79,7 @@
     margin-left: -90px;
 }
 
-select {
+/* select {
   -webkit-appearance: none;
   -moz-appearance: none;
   -ms-appearance: none;
@@ -108,7 +108,7 @@ select::-ms-expand {
 select {
   flex: 1;
   padding: 0 .5em;
-  color: #fff;
+  color:black;
   cursor: pointer;
 }
 /* Arrow */
@@ -128,9 +128,61 @@ select {
 /* Transition */
 .select:hover::after {
   color: #f39c12;
+} */
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0;
+  color: #222;
 }
 
+label[for=favcity] {
+  position: relative;
+  display: block;
+  width: 400px;
+  overflow: hidden;
+  cursor: pointer;
+}
 
+label[for=favcity]::after {
+  content: ' ';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 40px;
+  height: 100%;
+  display: block;
+  background: #24d7ea url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAOBAMAAAGq7RFVAAAAJ1BMVEX///////////////////////////////////////////////////9Ruv0SAAAADHRSTlMACAoREoKDt7y9zc5qtZoyAAAAcklEQVQIHQXBsQnCUAAFwFOCCKbIABaWERzi1yaFAzmEpHYEC8GUKVQEkbyhvOOkZqdWt0/QYKqLzQeF7dv6y/RLwa2wYtk4Xxxe+t8yd1WuM/rcUc2gYHEeoP02umSgTR50ybBPRuiSZAS6ZAQ4jgCAPyjYJiRH4fymAAAAAElFTkSuQmCC') no-repeat center center;
+  pointer-events: none;
+}
+
+label[for=favcity] select {
+  border: 5px solid #eeeeee;
+  background: white;
+  padding: 7px 20px 7px 20px;
+  width: 100%;
+  font-size: 16px;
+  font-family: monospace;
+  cursor: pointer;
+}
+
+label[for=favcity] select::-ms-expand {
+    display: none;
+}
+
+label[for=favcity] :-moz-any(select) {
+  width: 110%;
+}
+
+label[for=favcity].ie9 select {
+  width: 110%;
+}
+
+label[for=favcity] select:focus {
+  outline: 1px dotted #A9A9A9;
+}
 
 
 
@@ -142,22 +194,40 @@ select {
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <body>
             <h2 class="text-center">World Climate Change</h2>
-            <div class="select">
-              <select  id="mySelect" name="slct"  onchange="myFunction()" >
-                <option selected value="CO2 emissions (kt)">CO2 emissions</option>
-                <option value="Methane emissions (kt of CO2 equivalent)">Methane emissions</option>
-                <option value="Nitrous oxide emissions (thousand metric tons of CO2 equivalent)"> Nitrous oxide emissions</option>
-                <option value="4">Total greenhouse gas</option>
-              </select>
-            </div>
+            <br>
+            <!-- <input type="button" class="btn btn-info" value="View Animation" onclick="addInterval()"> -->
+           
+                    <div class="row">
+                      <div class="col-sm">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="addInterval()" >Start Animation</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="StopInterval()" >Stop Animation</button>
+                            <label for="favcity">
+                                    <select  id="mySelect" name="slct"  onchange="myFunction()">
+                                    <option selected value="CO2 emissions (kt)">CO2 emissions</option>
+                                    <option value="Methane emissions (kt of CO2 equivalent)">Methane emissions</option>
+                                    <option value="Nitrous oxide emissions (thousand metric tons of CO2 equivalent)"> Nitrous oxide emissions</option>
+                                    <option value="Total greenhouse gas emissions (kt of CO2 equivalent)">Total greenhouse gas</option>
+                                    <option value="Population, total">Total Population</option>
+                                    </select>
+                                  </label>
+                      </div>
+                      <div class="col-sm">
+                           
+                      </div>
+                    </div>
+            <br>
+
+
+
         <br>
-        <div class="map">
-        </div>
-        <div class="slider-position">
+        <div class="slider-position" id="slider-section">
                 <p> Year </p>
                 <input id="yr" type="range" min="1992" max="2012" step="1" value="1967" class="slider"  style="width: 800px"/>
-                <output id = "yrdemo" value="1992"></output><br>
+                <output id = "yrdemo" value="1992">1992</output><br>
         </div>
+        <div class="map">
+        </div>
+
        
 
 
@@ -172,6 +242,40 @@ select {
              var toolTipValue='CO2 emissions (kt)';
              console.log(output_year);
             var yearVisedata={};
+
+           
+            var yearAuto=1991;
+            function trig() {  
+                yearAuto++;
+                if(yearAuto>=2012){
+                    document.getElementById("yr").style.display="block";
+                    return;
+                }
+                year=yearAuto;
+                d3.queue()
+                .defer(d3.json,"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+                    .defer(d3.csv,"concap.csv")
+                    .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
+                    .await(ready)
+            }
+           
+            function addInterval(){
+                document.getElementById("yr").style.display="none";
+                
+                var i = setInterval(function() { trig(); }, 200);
+            }
+            function StopInterval(){
+                document.getElementById("yr").style.display="block";
+            }
+
+            function changeSlider(){
+                console.log("trigger");
+
+            }
+
+
+
+
             document.getElementById("yr").addEventListener("change", function() {
                 output_year.value=this.value;
                 year=this.value;
@@ -186,18 +290,25 @@ select {
             
 
             function myFunction() {
-                //alert("hello");
-                var x = document.getElementById("mySelect").value;
-                // document.getElementById("demo").innerHTML = "You selected: " + x;
-               //console.log(x);
-               if(x=='CO2 emissions (kt)'){
+              
+                 downDownValue = document.getElementById("mySelect").value;
+                 yearAuto=1991;
+              
+               console.log(downDownValue);
+               if(downDownValue=='CO2 emissions (kt)'){
                 toolTipValue='CO2 emissions (kt)';
                }
-               else if(x=='Methane emissions (kt of CO2 equivalent)'){
+               else if(downDownValue=='Methane emissions (kt of CO2 equivalent)'){
                 toolTipValue='Methane emissions (kt)';
                }
-               else if(x=='Nitrous oxide emissions (thousand metric tons of CO2 equivalent)'){
+               else if(downDownValue=='Nitrous oxide emissions (thousand metric tons of CO2 equivalent)'){
                 toolTipValue='Nitrous oxide emissions (kt)';
+               }
+               else if(downDownValue=='Population, total'){
+                toolTipValue='Total Population ';
+               }
+               else if(downDownValue=='Total greenhouse gas emissions (kt of CO2 equivalent)'){
+                toolTipValue='Total greenhouse (kt)';
                }
 
                d3.queue()
@@ -208,16 +319,10 @@ select {
 
 
             }
-
-            
             var yearVisedata=[];
-
-
             const tooltip = d3.select("body").append("div")
                             .attr("class", "tooltip")
                             .style("opacity", 0);
-
-
 
             var margin = { top: 50, right: 50, bottom: 50, left: 50 },
                 width = 800 - margin.left - margin.right,
@@ -246,33 +351,25 @@ select {
 
              function ready(error,topo,dataset,worldBankData){
                
-
-              
                  var count=0;
                  var maxValueCo2=0;
                  var countries = topo.features;
                  console.log(year);
                  for(var i=0;i<worldBankData.length;i++){
                         if(worldBankData[i].Year==year){
-                                //console.log(worldBankData[i]['CO2 emissions (kt)']);
                             if(worldBankData[i][downDownValue]>maxValueCo2){
                                 maxValueCo2=worldBankData[i][downDownValue];
                             }
                             count++;
                         }
-            
                     }
-             
-                
-
                 var color =d3.scaleLinear()
                             .domain([3, maxValueCo2])
                             .range(["#eba7ac","#9e242d"]);
 
-                            var colorScale = d3.scaleThreshold()
-                                .domain([1000, 10000, 100000, 300000, 1000000, 5000000])
-                                .range(d3.schemeBlues[7]);
-
+                var colorScale = d3.scaleThreshold()
+                            .domain([1000, 10000, 100000, 300000, 1000000, 5000000])
+                            .range(d3.schemeBlues[7]);
 
 
                  svg.selectAll(".country")
@@ -299,10 +396,10 @@ select {
                             for(var i=0;i<worldBankData.length;i++){
                                  if(worldBankData[i].Year==year){
                                      if(worldBankData[i]['Country Code']==t){
-                                     console.log("yes");
-                                     console.log(worldBankData[i]);
+                                     //console.log("yes");
+                                     //console.log(worldBankData[i]);
                                      hoverData=worldBankData[i];
-                                     console.log(hoverData);
+                                     //console.log(hoverData);
                                      tooltip
                                     .style("opacity", 0.8)
                                     .html("Name: " + hoverData['Country Name'] +
@@ -313,10 +410,7 @@ select {
                                      }
                                     
                                  }
-                                 console.log
-                                    
-
-                            
+                                 
                             }
                     })
                     .on('mouseout',function(d){
