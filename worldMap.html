@@ -1,21 +1,22 @@
-<!DOCTYPE html>
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-        <style>
-        svg{
-            background: #efefef;
-        }
-        body{
-            padding :100px;
-        }
+<!DOCTYPE html> <!--[if gt IE 8]><!-->
+<html class="no-js">
+  <!--<![endif]-->
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="" />
+    <style>
+      svg {
+        background: #efefef;
+      }
+      body {
+        padding: 100px;
+      }
 
-        .tooltip {
+      .tooltip {
         position: absolute;
         text-align: center;
         font-size: 0.8em;
@@ -24,242 +25,650 @@
         pointer-events: none;
         background-color: #222;
         color: #fff;
-        }
+      }
 
-        .country{
-            fill:#cccccc;
-            stroke: #333333;;
-        }
-        .selected{
-            fill:aquamarine;
-        }
-        .slidecontainer {
-  width: 100%;
-}
+      .country {
+        fill: #cccccc;
+        stroke: #333333;
+      }
+      .selected {
+        fill: aquamarine;
+      }
+      .slidecontainer {
+        width: 100%;
+      }
 
-.slider {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 8px;
-  border-radius: 5px;
-  background: #d3d3d3;
-  outline: none;
-  opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
-}
+      .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: 0.2s;
+        transition: opacity 0.2s;
+      }
 
-.slider:hover {
-  opacity: 1;
-}
+      .slider:hover {
+        opacity: 1;
+      }
 
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #4CAF50;
-  cursor: pointer;
-}
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #4caf50;
+        cursor: pointer;
+      }
 
-.slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: #4CAF50;
-  cursor: pointer;
-}
+      .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #4caf50;
+        cursor: pointer;
+      }
 
-.map{
-    margin-top: -70px;
-    margin-left: -90px;
-}
-.slider-position{
-    margin-left: -90px;
-}
-
-
+      .map {
+        margin-top: -70px;
+        margin-left: -90px;
+      }
+      .slider-position {
+        margin-left: -90px;
+      }
     </style>
-    </head>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
-    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <body>
-        
-       
-          
-        
-        <div class="map">
-                <h2 class="text-center">World Climate Change</h2>
-               <br/>
-        </div>
-        <br>
+  </head>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/2.7.4/d3.layout.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous"
+  />
+  <body>
+    <div class="map">
+      <h2 class="text-center">World Climate Change</h2>
+      <br />
+    </div>
+    <br />
 
-        <div class="slider-position">
-                <p> Year </p>
-                <input id="yr" type="range" min="1967" max="2012" step="1" value="1967" class="slider"  style="width: 800px"/>
-                <output id = "yrdemo" value="1970"></output><br>
-        </div>
-       
+    <div class="slider-position">
+      <p>Year</p>
+      <input
+        id="yr"
+        type="range"
+        min="1967"
+        max="2012"
+        step="1"
+        value="1967"
+        class="slider"
+        style="width: 800px"
+      />
+      <output id="yrdemo" value="1970"></output><br />
+    </div>
 
+    <div class="piechart"></div>
+    <div class="barchart"></div>
 
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        
-        <script>
-              var year=2012;
-             var output_year = document.getElementById("yrdemo");
-             console.log(output_year);
-            var yearVisedata={};
-            document.getElementById("yr").addEventListener("change", function() {
-                console.log("slider change");
-                output_year.value=this.value;
-                year=this.value;
-                
-            d3.queue()
-            .defer(d3.json,"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-                .defer(d3.csv,"concap.csv")
-                .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
-                .await(ready)
-               
-           
-            });
-            
-            var yearVisedata=[];
+    <!--[if lt IE 7]>
+      <p class="browsehappy">
+        You are using an <strong>outdated</strong> browser. Please
+        <a href="#">upgrade your browser</a> to improve your experience.
+      </p>
+    <![endif]-->
 
+    <script>
+      var year = 2012;
+      var output_year = document.getElementById("yrdemo");
+      console.log(output_year);
+      var yearVisedata = {};
+      document.getElementById("yr").addEventListener("change", function() {
+        console.log("slider change");
+        output_year.value = this.value;
+        year = this.value;
 
-            const tooltip = d3.select("body").append("div")
-                            .attr("class", "tooltip")
-                            .style("opacity", 0);
+        d3.queue()
+          .defer(
+            d3.json,
+            "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"
+          )
+          .defer(d3.csv, "concap.csv")
+          .defer(
+            d3.csv,
+            "https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv"
+          )
+          .await(ready);
+      });
 
+      var yearVisedata = [];
 
+      const tooltip = d3
+        .select("body")
+        .append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
-            var margin = { top: 50, right: 50, bottom: 50, left: 50 },
-                width = 800 - margin.left - margin.right,
-                height = 400 - margin.top - margin.bottom;
-            
-            var svg = d3.select('.map').append('svg')
-                .attr('width', width + margin.left + margin.right)
-                .attr('height', height + margin.top + margin.bottom)
-                .append('g')
-                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-            
-                var projection = d3.geoMercator()
-                                .translate([width/2,height/2])
-                                .scale(90);
+      var margin = { top: 50, right: 50, bottom: 50, left: 50 },
+        width = 800 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
 
-                var path = d3.geoPath()
-                            .projection(projection);     
+      var svg = d3
+        .select(".map")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                var f= d3.queue()
-                .defer(d3.json,"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-                .defer(d3.csv,"concap.csv")
-                .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
-                .await(ready)
+      var projection = d3
+        .geoMercator()
+        .translate([width / 2, height / 2])
+        .scale(90);
 
-                          var yearVisedata=[];    
+      var path = d3.geoPath().projection(projection);
 
-             function ready(error,topo,dataset,worldBankData){
-               
+      var f = d3
+        .queue()
+        .defer(
+          d3.json,
+          "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"
+        )
+        .defer(d3.csv, "concap.csv")
+        .defer(
+          d3.csv,
+          "https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv"
+        )
+        .await(ready);
 
-              
-                 var count=0;
-                 var maxValueCo2=0;
-                 var countries = topo.features;
-                 console.log(year);
-                 for(var i=0;i<worldBankData.length;i++){
-                        if(worldBankData[i].Year==year){
-                                //console.log(worldBankData[i]['CO2 emissions (kt)']);
-                            if(worldBankData[i]['CO2 emissions (kt)']>maxValueCo2){
-                                maxValueCo2=worldBankData[i]['CO2 emissions (kt)'];
-                            }
-                            count++;
-                        }
-            
-                    }
-             
-                
+      var yearVisedata = [];
 
-                var color =d3.scaleLinear()
-                            .domain([3, maxValueCo2])
-                            .range(["#eba7ac","#9e242d"]);
+      function ready(error, topo, dataset, worldBankData) {
+        renderPieChart(worldBankData);
+        // console.log(worldBankData);
 
-                            var colorScale = d3.scaleThreshold()
-                                .domain([1000, 10000, 100000, 300000, 1000000, 5000000])
-                                .range(d3.schemeBlues[7]);
+        var count = 0;
+        var maxValueCo2 = 0;
+        var countries = topo.features;
+        console.log(year);
+        for (var i = 0; i < worldBankData.length; i++) {
+          if (worldBankData[i].Year == year) {
+            //console.log(worldBankData[i]['CO2 emissions (kt)']);
+            if (worldBankData[i]["CO2 emissions (kt)"] > maxValueCo2) {
+              maxValueCo2 = worldBankData[i]["CO2 emissions (kt)"];
+            }
+            count++;
+          }
+        }
 
+        var color = d3
+          .scaleLinear()
+          .domain([3, maxValueCo2])
+          .range(["#eba7ac", "#9e242d"]);
 
+        var colorScale = d3
+          .scaleThreshold()
+          .domain([1000, 10000, 100000, 300000, 1000000, 5000000])
+          .range(d3.schemeBlues[7]);
 
-                 svg.selectAll(".country")
-                 .data(countries)
-                 .enter()
-                    .append("path")
-                    //.attr("class","country")
-                    .attr("d",path)
-                    .attr("fill",function(d,i){
-                        var t=d.id;
-                        var colorValue=null;
-                        for(var i=0;i<worldBankData.length;i++){
-                            if(worldBankData[i].Year==year){
-                                if(worldBankData[i]['Country Code']==t){
-                                    colorValue=worldBankData[i]['CO2 emissions (kt)'];
-                                }
-                            }
-                        }
-                       // console.log(colorValue);
-                        //return color(colorValue);
-                        return colorScale(colorValue);
-                    })
-                    .on('mouseover',function(d){
-                        // d3.select(this).classed("selected",true)
-                         var t=d.id;
-                         var hoverData=null;
-                         console.log(t);
-                            for(var i=0;i<worldBankData.length;i++){
-                                //console.log(worldBankData[i]['Country Code']);
-                                 if(worldBankData[i].Year==year){
-                                     if(worldBankData[i]['Country Code']==t){
-                                     console.log("yes");
-                                     console.log(worldBankData[i]);
-                                     hoverData=worldBankData[i];
-                                     console.log(hoverData);
-                                     tooltip
-                                    .style("opacity", 0.8)
-                                    .html("Name: " + hoverData['Country Name'] +
-                                    "<br />Co2 Emission: " + hoverData['CO2 emissions (kt)']
-                                    
-                                      )
-                                    .style('left', (d3.event.pageX) + 'px')
-                                     .style('top', (d3.event.pageY) + 'px');
-                                     }
-                                    
-                                 }
-                                 console.log
-                                    
+        svg
+          .selectAll(".country")
+          .data(countries)
+          .enter()
+          .append("path")
+          //.attr("class","country")
+          .attr("d", path)
+          .attr("fill", function(d, i) {
+            var t = d.id;
+            var colorValue = null;
+            for (var i = 0; i < worldBankData.length; i++) {
+              if (worldBankData[i].Year == year) {
+                if (worldBankData[i]["Country Code"] == t) {
+                  colorValue = worldBankData[i]["CO2 emissions (kt)"];
+                }
+              }
+            }
+            // console.log(colorValue);
+            //return color(colorValue);
+            return colorScale(colorValue);
+          })
+          .on("mouseover", function(d) {
+            // d3.select(this).classed("selected",true)
+            var t = d.id;
+            var hoverData = null;
+            console.log(t);
+            for (var i = 0; i < worldBankData.length; i++) {
+              //console.log(worldBankData[i]['Country Code']);
+              if (worldBankData[i].Year == year) {
+                if (worldBankData[i]["Country Code"] == t) {
+                  console.log("yes");
+                  console.log(worldBankData[i]);
+                  hoverData = worldBankData[i];
+                  console.log(hoverData);
+                  tooltip
+                    .style("opacity", 0.8)
+                    .html(
+                      "Name: " +
+                        hoverData["Country Name"] +
+                        "<br />Co2 Emission: " +
+                        hoverData["CO2 emissions (kt)"]
+                    )
+                    .style("left", d3.event.pageX + "px")
+                    .style("top", d3.event.pageY + "px");
+                }
+              }
+              console.log;
+            }
+          })
+          .on("mouseout", function(d) {
+            d3.select(this).classed("selected", false);
+            d3.select(this);
+            tooltip.style("opacity", 0);
+          });
+      }
 
-                            
-                            }
-                    })
-                    .on('mouseout',function(d){
-                         d3.select(this).classed("selected",false)
-                         d3.select(this)
-                         tooltip.style("opacity", 0);
-                         
-                    });
-             }    
+      console.log("above");
+      // d3.csv('https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv', function(rows) {
+      //   console.log(rows);
+      // });
+      console.log("after ");
 
+      function renderBarChart(data) {
 
+        document.getElementsByClassName("barchart")[0].innerHTML = '';
 
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = 960 - margin.left - margin.right;
+        const height = 500 - margin.top - margin.bottom;
 
-            console.log("above");
-            // d3.csv('https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv', function(rows) {
-            //   console.log(rows);
-            // });
-            console.log("after ");
-        
-        </script>
-    </body>
+        const xScale = d3
+          .scaleBand()
+          .range([0, width])
+          .round(true)
+          .paddingInner(0.1); // space between bars (it's a ratio)
+
+        const yScale = d3.scaleLinear().range([height, 0]);
+
+        const xAxis = d3.axisBottom().scale(xScale);
+
+        const yAxis = d3
+          .axisLeft()
+          .scale(yScale)
+          .ticks(10, "%");
+
+        const svg = d3
+          .select(".barchart")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", `translate(${margin.left}, ${margin.right})`);
+
+        const tooltip = d3
+          .select(".barchart")
+          .append("div")
+          .attr("class", "tooltip")
+          .style("opacity", 0);
+
+        xScale.domain(data.map(d => d.name));
+        yScale.domain([0, d3.max(data, d => d.value)]);
+
+        svg
+          .append("g")
+          .attr("class", "x axis")
+          .attr("transform", `translate(0, ${height})`)
+          .call(xAxis);
+
+        svg
+          .append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Frequency");
+
+        svg
+          .selectAll(".bar")
+          .data(data)
+          .enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("x", d => xScale(d.name))
+          .attr("width", xScale.bandwidth())
+          .attr("y", d => yScale(d.value))
+          .attr("height", d => height - yScale(d.value))
+          .on("mouseover", d => {
+            tooltip
+              .transition()
+              .duration(200)
+              .style("opacity", 0.9);
+            tooltip
+              .html(`Frequency: <span>${d.value}</span>`)
+              .style("left", `${d3.event.layerX}px`)
+              .style("top", `${d3.event.layerY - 28}px`);
+          })
+          .on("mouseout", () =>
+            tooltip
+              .transition()
+              .duration(500)
+              .style("opacity", 0)
+          );
+      }
+
+      function renderPieChart(worldBankData) {
+        document.getElementsByClassName("piechart")[0].innerHTML = "";
+
+        console.log("rendering pie chart");
+
+        let nonCountryArray = [
+          "East Asia & Pacific (excluding high income)",
+          "East Asia & Pacific (IDA & IBRD countries)",
+          "Early-demographic dividend",
+          "element Middle East & North Africa (IDA & IBRD countries)",
+          "Europe & Central Asia (IDA & IBRD countries)",
+          "East Asia & Pacific",
+          "IBRD only",
+          "Late-demographic dividend",
+          "Latin America & Caribbean (excluding high income)",
+          "Middle East & North Africa (excluding high income)",
+          "Middle East & North Africa (IDA & IBRD countries)",
+          "Pacific island small states",
+          "Sub-Saharan Africa (IDA & IBRD countries)",
+          "Upper middle income",
+          "Central Europe and the Baltics",
+          "Europe & Central Asia (excluding high income)",
+          "Europe & Central Asia",
+          "Fragile and conflict affected situations",
+          "Heavily indebted poor countries (HIPC)",
+          "High income",
+          "IDA & IBRD total",
+          "Low & middle income",
+          "Middle income",
+          "OECD members",
+          "Post-demographic dividend",
+          "Pre-demographic dividend",
+          "Sub-Saharan Africa (excluding high income)",
+          "Caribbean small states",
+          "Least developed countries: UN classification",
+          "South Asia (IDA & IBRD)",
+          "South Asia",
+          "Latin America & the Caribbean (IDA & IBRD countries)",
+          "Latin America & Caribbean",
+          "Low income",
+          "European Union",
+          "World",
+          "Lower middle income",
+          "Middle East & North Africa",
+          "Euro area",
+          "Arab World",
+          "IDA total",
+          "Sub-Saharan Africa",
+          "IDA blend",
+          "IDA only",
+          "Small states",
+          "Other small states"
+        ];
+
+        // let sortIndex = "Country Name";
+        let sortIndex = "CO2 emissions (kt)";
+        let sortedWorldBankData = [];
+
+        // sortedWorldBankData = worldBankData.slice().sort((a, b) => d3.descending(a[sortIndex], b[sortIndex]));
+        sortedWorldBankData = worldBankData
+          .slice()
+          .sort((a, b) =>
+            d3.descending(parseInt(a[sortIndex]), parseInt(b[sortIndex]))
+          );
+
+        // for each element in worldBankData if the country name is in nonCountyArrays[] do not add it to cleaned array
+        // console.log(year);
+        cleanedWorldBankData = [];
+
+        sortedWorldBankData.forEach(element => {
+          // console.log(element["Year"]);
+          if (
+            element["Year"] == year &&
+            !nonCountryArray.includes(element["Country Name"])
+          ) {
+            // console.log(element["Country Name"]);
+            return cleanedWorldBankData.push(element); // filter remove
+          }
+        });
+
+        console.log("cleanedWorldBankData");
+        console.log(cleanedWorldBankData);
+
+        console.log("sortedWorldBankData");
+        // console.log(sortedWorldBankData);
+
+        var data = [
+          // { name: "USA", value: 60 },
+          // { name: "UK", value: 20 },
+          // { name: "Canada", value: 30 },
+          // { name: "Maxico", value: 15 },
+          // { name: "Japan", value: 10 }
+        ];
+
+        // push top 10 values in data
+
+        for (i = 0; i < 5; i++) {
+          console.log(
+            cleanedWorldBankData[i][sortIndex] +
+              " - " +
+              cleanedWorldBankData[i]["Country Name"]
+          );
+          data.push({
+            name: cleanedWorldBankData[i]["Country Name"],
+            value: cleanedWorldBankData[i][sortIndex]
+          });
+        }
+
+        console.log(data);
+
+        renderBarChart(data);
+
+        var text = "";
+
+        var width = 200;
+        var height = 200;
+        var thickness = 40;
+        var duration = 750;
+        var padding = 10;
+        var opacity = 0.8;
+        var opacityHover = 1;
+        var otherOpacityOnHover = 0.8;
+        var tooltipMargin = 13;
+
+        var radius = Math.min(width - padding, height - padding) / 2;
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+        var svg = d3
+          .select(".piechart")
+          .append("svg")
+          .attr("class", "pie")
+          .attr("width", width)
+          .attr("height", height);
+
+        var g = svg
+          .append("g")
+          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        var arc = d3
+          .arc()
+          .innerRadius(0)
+          .outerRadius(radius);
+
+        var pie = d3
+          .pie()
+          .value(function(d) {
+            return d.value;
+          })
+          .sort(null);
+
+        var path = g
+          .selectAll("path")
+          .data(pie(data))
+          .enter()
+          .append("g")
+          .append("path")
+          .attr("d", arc)
+          .attr("fill", (d, i) => color(i))
+          .style("opacity", opacity)
+          .style("stroke", "white")
+          .on("mouseover", function(d) {
+            d3.selectAll("path").style("opacity", otherOpacityOnHover);
+            d3.select(this).style("opacity", opacityHover);
+
+            let g = d3
+              .select("svg")
+              .style("cursor", "pointer")
+              .append("g")
+              .attr("class", "tooltip")
+              .style("opacity", 0);
+
+            g.append("text")
+              .attr("class", "name-text")
+              .text(`${d.data.name} (${d.data.value})`)
+              .attr("text-anchor", "middle");
+
+            let text = g.select("text");
+            let bbox = text.node().getBBox();
+            let padding = 2;
+            g.insert("rect", "text")
+              .attr("x", bbox.x - padding)
+              .attr("y", bbox.y - padding)
+              .attr("width", bbox.width + padding * 2)
+              .attr("height", bbox.height + padding * 2)
+              .style("fill", "white")
+              .style("opacity", 0.75);
+          })
+          .on("mousemove", function(d) {
+            let mousePosition = d3.mouse(this);
+            let x = mousePosition[0] + width / 2;
+            let y = mousePosition[1] + height / 2 - tooltipMargin;
+
+            let text = d3.select(".tooltip text");
+            let bbox = text.node().getBBox();
+            if (x - bbox.width / 2 < 0) {
+              x = bbox.width / 2;
+            } else if (width - x - bbox.width / 2 < 0) {
+              x = width - bbox.width / 2;
+            }
+
+            if (y - bbox.height / 2 < 0) {
+              y = bbox.height + tooltipMargin * 2;
+            } else if (height - y - bbox.height / 2 < 0) {
+              y = height - bbox.height / 2;
+            }
+
+            d3.select(".tooltip")
+              .style("opacity", 1)
+              .attr("transform", `translate(${x}, ${y})`);
+          })
+          .on("mouseout", function(d) {
+            d3.select("svg")
+              .style("cursor", "none")
+              .select(".tooltip")
+              .remove();
+            d3.selectAll("path").style("opacity", opacity);
+          })
+          .on("touchstart", function(d) {
+            d3.select("svg").style("cursor", "none");
+          })
+          .each(function(d, i) {
+            this._current = i;
+          });
+
+        let legend = d3
+          .select("#chart")
+          .append("div")
+          .attr("class", "legend")
+          .style("margin-top", "30px");
+
+        let keys = legend
+          .selectAll(".key")
+          .data(data)
+          .enter()
+          .append("div")
+          .attr("class", "key")
+          .style("display", "flex")
+          .style("align-items", "center")
+          .style("margin-right", "20px");
+
+        keys
+          .append("div")
+          .attr("class", "symbol")
+          .style("height", "10px")
+          .style("width", "10px")
+          .style("margin", "5px 5px")
+          .style("background-color", (d, i) => color(i));
+
+        keys
+          .append("div")
+          .attr("class", "name")
+          .text(d => `${d.name} (${d.value})`);
+
+        keys.exit().remove();
+
+        // console.log(worldBankData);
+      }
+    </script>
+
+    <!-- bar chart css -->
+    <style>
+      .bar {
+        fill: #4682b4;
+      }
+
+      .bar:hover {
+        fill: #17bf3c;
+      }
+
+      .axis {
+        font-family: "Lobster";
+        font-size: 12px;
+      }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        shape-rendering: crispEdges;
+        stroke: #000;
+      }
+
+      .x.axis path {
+        display: none;
+      }
+
+      .y.axis text {
+        fill: #000;
+      }
+
+      .tooltip {
+        background: #b0c4de;
+        border: 0;
+        border-radius: 8px;
+        font-family: "Lobster";
+        font-size: 12px;
+        font-weight: bold;
+        height: 20px;
+        padding: 2px;
+        pointer-events: none;
+        position: absolute;
+        text-align: center;
+        width: 120px;
+      }
+      .tooltip span {
+        color: #d11515;
+      }
+    </style>
+  </body>
 </html>
