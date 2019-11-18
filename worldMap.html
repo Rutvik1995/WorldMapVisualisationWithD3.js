@@ -34,7 +34,7 @@
             fill:aquamarine;
         }
         .slidecontainer {
-  width: 100%;
+        width: 100%;
 }
 
 .slider {
@@ -72,12 +72,66 @@
 }
 
 .map{
-    margin-top: -70px;
+    /* margin-top: -70px; */
     margin-left: -90px;
 }
 .slider-position{
     margin-left: -90px;
 }
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: 0 !important;
+  background: #2c3e50;
+  background-image: none;
+}
+/* Remove IE arrow */
+select::-ms-expand {
+  display: none;
+}
+/* Custom Select */
+.select {
+  position: relative;
+  display: flex;
+  width: 20em;
+  height: 3em;
+  line-height: 3;
+  background: #2c3e50;
+  overflow: hidden;
+  border-radius: .25em;
+}
+select {
+  flex: 1;
+  padding: 0 .5em;
+  color: #fff;
+  cursor: pointer;
+}
+/* Arrow */
+.select::after {
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0 1em;
+  background: #34495e;
+  cursor: pointer;
+  pointer-events: none;
+  -webkit-transition: .25s all ease;
+  -o-transition: .25s all ease;
+  transition: .25s all ease;
+}
+/* Transition */
+.select:hover::after {
+  color: #f39c12;
+}
+
+
+
 
 
     </style>
@@ -87,35 +141,38 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <body>
-        
-       
-          
-        
-        <div class="map">
-                <h2 class="text-center">World Climate Change</h2>
-               <br/>
-        </div>
+            <h2 class="text-center">World Climate Change</h2>
+            <div class="select">
+              <select  id="mySelect" name="slct"  onchange="myFunction()" >
+                <option selected value="CO2 emissions (kt)">CO2 emissions</option>
+                <option value="Methane emissions (kt of CO2 equivalent)">Methane emissions</option>
+                <option value="Nitrous oxide emissions (thousand metric tons of CO2 equivalent)"> Nitrous oxide emissions</option>
+                <option value="4">Total greenhouse gas</option>
+              </select>
+            </div>
         <br>
-
+        <div class="map">
+        </div>
         <div class="slider-position">
                 <p> Year </p>
-                <input id="yr" type="range" min="1967" max="2012" step="1" value="1967" class="slider"  style="width: 800px"/>
-                <output id = "yrdemo" value="1970"></output><br>
+                <input id="yr" type="range" min="1992" max="2012" step="1" value="1967" class="slider"  style="width: 800px"/>
+                <output id = "yrdemo" value="1992"></output><br>
         </div>
        
 
 
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        
+
+
+
         <script>
-              var year=2012;
+
+            var year=1992;
+            var downDownValue='CO2 emissions (kt)';
              var output_year = document.getElementById("yrdemo");
+             var toolTipValue='CO2 emissions (kt)';
              console.log(output_year);
             var yearVisedata={};
             document.getElementById("yr").addEventListener("change", function() {
-                console.log("slider change");
                 output_year.value=this.value;
                 year=this.value;
                 
@@ -124,9 +181,34 @@
                 .defer(d3.csv,"concap.csv")
                 .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
                 .await(ready)
-               
-           
             });
+
+            
+
+            function myFunction() {
+                //alert("hello");
+                var x = document.getElementById("mySelect").value;
+                // document.getElementById("demo").innerHTML = "You selected: " + x;
+               //console.log(x);
+               if(x=='CO2 emissions (kt)'){
+                toolTipValue='CO2 emissions (kt)';
+               }
+               else if(x=='Methane emissions (kt of CO2 equivalent)'){
+                toolTipValue='Methane emissions (kt)';
+               }
+               else if(x=='Nitrous oxide emissions (thousand metric tons of CO2 equivalent)'){
+                toolTipValue='Nitrous oxide emissions (kt)';
+               }
+
+               d3.queue()
+                .defer(d3.json,"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+                .defer(d3.csv,"concap.csv")
+                .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
+                .await(ready)
+
+
+            }
+
             
             var yearVisedata=[];
 
@@ -160,7 +242,7 @@
                 .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
                 .await(ready)
 
-                          var yearVisedata=[];    
+                var yearVisedata=[];    
 
              function ready(error,topo,dataset,worldBankData){
                
@@ -173,8 +255,8 @@
                  for(var i=0;i<worldBankData.length;i++){
                         if(worldBankData[i].Year==year){
                                 //console.log(worldBankData[i]['CO2 emissions (kt)']);
-                            if(worldBankData[i]['CO2 emissions (kt)']>maxValueCo2){
-                                maxValueCo2=worldBankData[i]['CO2 emissions (kt)'];
+                            if(worldBankData[i][downDownValue]>maxValueCo2){
+                                maxValueCo2=worldBankData[i][downDownValue];
                             }
                             count++;
                         }
@@ -197,7 +279,6 @@
                  .data(countries)
                  .enter()
                     .append("path")
-                    //.attr("class","country")
                     .attr("d",path)
                     .attr("fill",function(d,i){
                         var t=d.id;
@@ -205,21 +286,17 @@
                         for(var i=0;i<worldBankData.length;i++){
                             if(worldBankData[i].Year==year){
                                 if(worldBankData[i]['Country Code']==t){
-                                    colorValue=worldBankData[i]['CO2 emissions (kt)'];
+                                    colorValue=worldBankData[i][downDownValue];
                                 }
                             }
                         }
-                       // console.log(colorValue);
-                        //return color(colorValue);
                         return colorScale(colorValue);
                     })
                     .on('mouseover',function(d){
-                        // d3.select(this).classed("selected",true)
                          var t=d.id;
                          var hoverData=null;
                          console.log(t);
                             for(var i=0;i<worldBankData.length;i++){
-                                //console.log(worldBankData[i]['Country Code']);
                                  if(worldBankData[i].Year==year){
                                      if(worldBankData[i]['Country Code']==t){
                                      console.log("yes");
@@ -229,8 +306,7 @@
                                      tooltip
                                     .style("opacity", 0.8)
                                     .html("Name: " + hoverData['Country Name'] +
-                                    "<br />Co2 Emission: " + hoverData['CO2 emissions (kt)']
-                                    
+                                    "<br />"+toolTipValue+" " + hoverData[downDownValue]
                                       )
                                     .style('left', (d3.event.pageX) + 'px')
                                      .style('top', (d3.event.pageY) + 'px');
@@ -255,9 +331,6 @@
 
 
             console.log("above");
-            // d3.csv('https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv', function(rows) {
-            //   console.log(rows);
-            // });
             console.log("after ");
         
         </script>
