@@ -1,782 +1,148 @@
-<!DOCTYPE html>
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-        <style>
-        svg{
-            background: #efefef;
-        }
-
-
-
-        .tooltip {
-        position: absolute;
-        text-align: center;
-        font-size: 0.8em;
-        border-radius: 1em;
-        padding: 0.8em;
-        pointer-events: none;
-        background-color: #222;
-        color: #fff;
-        }
-
-        .country{
-            fill:#cccccc;
-            stroke: #333333;;
-        }
-        .selected{
-            fill:aquamarine;
-        }
-        .slidecontainer {
-        width: 100%;
-}
-
-.slider {
-  -webkit-appearance: none;
- 
-  height: 8px;
-  border-radius: 5px;
-  background: #d3d3d3;
-  outline: none;
-  opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
-  width: 100px;
-}
-
-.slider:hover {
-  opacity: 1;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #4CAF50;
-  cursor: pointer;
-}
-
-.slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: #4CAF50;
-  cursor: pointer;
-}
-
-.map{
-    /* margin-top: -70px; */
-   
-}
-.slider-position{
-   
-}
-
-
-/* select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  -ms-appearance: none;
-  appearance: none;
-  outline: 0;
-  box-shadow: none;
-  border: 0 !important;
-  background: #2c3e50;
-  background-image: none;
-}
-/* Remove IE arrow */
-select::-ms-expand {
-  display: none;
-}
-/* Custom Select */
-.select {
-  position: relative;
-  display: flex;
-  width: 20em;
-  height: 3em;
-  line-height: 3;
-  background: #2c3e50;
-  overflow: hidden;
-  border-radius: .25em;
-}
-select {
-  flex: 1;
-  padding: 0 .5em;
-  color:black;
-  cursor: pointer;
-}
-/* Arrow */
-.select::after {
-  content: '\25BC';
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 0 1em;
-  background: #34495e;
-  cursor: pointer;
-  pointer-events: none;
-  -webkit-transition: .25s all ease;
-  -o-transition: .25s all ease;
-  transition: .25s all ease;
-}
-/* Transition */
-.select:hover::after {
-  color: #f39c12;
-} */
-
-select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 0;
-  color: #222;
-}
-
-label[for=favcity] {
-  position: relative;
-  display: block;
-  width: 400px;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-label[for=favcity]::after {
-  content: ' ';
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 40px;
-  height: 100%;
-  display: block;
-  background: #24d7ea url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAOBAMAAAGq7RFVAAAAJ1BMVEX///////////////////////////////////////////////////9Ruv0SAAAADHRSTlMACAoREoKDt7y9zc5qtZoyAAAAcklEQVQIHQXBsQnCUAAFwFOCCKbIABaWERzi1yaFAzmEpHYEC8GUKVQEkbyhvOOkZqdWt0/QYKqLzQeF7dv6y/RLwa2wYtk4Xxxe+t8yd1WuM/rcUc2gYHEeoP02umSgTR50ybBPRuiSZAS6ZAQ4jgCAPyjYJiRH4fymAAAAAElFTkSuQmCC') no-repeat center center;
-  pointer-events: none;
-}
-
-label[for=favcity] select {
-  border: 5px solid #eeeeee;
-  background: white;
-  padding: 7px 20px 7px 20px;
-  width: 100%;
-  font-size: 16px;
-  font-family: monospace;
-  cursor: pointer;
-}
-
-label[for=favcity] select::-ms-expand {
-    display: none;
-}
-
-label[for=favcity] :-moz-any(select) {
-  width: 110%;
-}
-
-label[for=favcity].ie9 select {
-  width: 110%;
-}
-
-label[for=favcity] select:focus {
-  outline: 1px dotted #A9A9A9;
-}
-
-
-
-    </style>
-    </head>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
-    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <body>
-                 
-        <!-- <div class="bg-info clearfix">
+<!DOCTYPE html> <!--[if gt IE 8]><!-->
+<html class="no-js">
+  <!--<![endif]-->
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="" />
+  </head>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="style.css" />
+  <!-- <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"
+  /> -->
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+  <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
+  <body>
+    <!-- <div class="bg-info clearfix">
             <button type="button" class="btn btn-secondary float-left">Example Button floated left</button>
             <button type="button" class="btn btn-secondary float-right">Example Button floated right</button>
           </div> -->
-            <!-- <h2 class="text-center">World Climate Change</h2> -->
-            <!-- <br> -->
-            <!-- <input type="button" class="btn btn-info" value="View Animation" onclick="addInterval()"> -->
-            
-            <hr>
-            <div>
 
-            </div>
-            <div class="row displayElement">
-              <div class="col-sm-3" >
-                  <label for="favcity">
-                      <select  id="mySelect" name="slct"  onchange="myFunction()">
-                      <option selected value="CO2 emissions (kt)">CO2 emissions</option>
-                      <option value="Methane emissions (kt of CO2 equivalent)">Methane emissions</option>
-                      <option value="Nitrous oxide emissions (thousand metric tons of CO2 equivalent)"> Nitrous oxide emissions</option>
-                      <option value="Total greenhouse gas emissions (kt of CO2 equivalent)">Total greenhouse gas</option>
-                      <option value="Population, total">Total Population</option>
-                      </select>
+    <!-- <br> -->
+    <!-- <input type="button" class="btn btn-info" value="View Animation" onclick="addInterval()"> -->
+
+    <div class="top-banner text-center">
+      <h2 class="">World Climate Change</h2>
+      <p>CSC196v - Interactive Visualization Assignment</p>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Controls -->
+        <div class="col-sm-12">
+          <div class="top-controls">
+              <div class="data-dropdown-container">
+
+              
+                  <b>Select Dataset</b>
+              <label for="favcity">
+                
+                <select id="mySelect" name="slct" onchange="myFunction()">
+                  <option selected value="CO2 emissions (kt)">
+                    CO2 emissions</option
+                  >
+                  <option value="Methane emissions (kt of CO2 equivalent)"
+                    >Methane emissions</option
+                  >
+                  <option
+                    value="Nitrous oxide emissions (thousand metric tons of CO2 equivalent)"
+                  >
+                    Nitrous oxide emissions</option
+                  >
+                  <option
+                    value="Total greenhouse gas emissions (kt of CO2 equivalent)"
+                    >Total greenhouse gas</option
+                  >
+                  <option value="Population, total">Total Population</option>
+                </select>
               </label>
+            </div>
+
+              <div class="year-slider-container">
+                <span><b>Select Year: </b> <output id="yrdemo" value="1992">1992</output></span>
+                  <div class="slider-position" id="slider-section">
+                      <input
+                        id="yr"
+                        type="range"
+                        min="1992"
+                        max="2012"
+                        step="1"
+                        value="1967"
+                        class="slider"
+                        style="width: 100%"
+                      />
+                  
+                      
+                </div>
+                <span
+              id="animationSpan"
+              style="display: none; font-size: 30px; font-style: italic;"
+            ></span>
               </div>
-              <div class="col-sm-3">
-                  <button type="button" class="btn btn-primary btn-sm" onclick="addInterval()" >Start Animation</button>
-                  <!-- <button type="button" class="btn btn-danger btn-sm" onclick="StopInterval()" >Stop Animation</button> -->
-                  <b><span  id="animationSpan" style="display: none; font-size: 30px; font-style: italic;"></span>
-                    </b>
+          
+              <div class="right-btn-container">
+
+                
+                <button
+                type="button"
+                class="start-animation-btn" 
+            onclick="addInterval()"
+            >
+            Start Animation
+          </button>
+          
+          <button
+          type="button"
+            class="start-animation-btn" 
+            
+            >
+            Start Animation
+          </button>
+          
+        </div>
+            
+            </div>
+          
+          </div>
+        </div>
+
+        <div class="row">
+
+          <!-- Map -->
+          <div class="col-sm-6">
+            <div class="map"></div>
+          </div>
+          
+          <!-- right col -->
+          <div class="col-sm-6">
+            <div class="row">
+              <div class="col-sm-12">
+                <div id="piechart"></div>
               </div>
             </div>
-            <div class="map">
+            
+            <div class="col-sm-12">
+              <div id="barchart"></div>
             </div>
-            
-            <div class="slider-position" id="slider-section">
-                <input id="yr" type="range" min="1992" max="2012" step="1" value="1967" class="slider"  style="width: 700px"/>
-                <output id = "yrdemo" value="1992">1992</output><br>
-                
-             </div>
-             <div class="piechart"></div>
-             <div class="barchart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <footer class="text-center"><p>Submitted By: Rutvik Patel, Suraj Rawat, Gaurav Bora</p></footer>
 
-
-
-
-
-        <script>
-            var number = 123;
-            var year=1992;
-            var timeInterval;
-            var downDownValue='CO2 emissions (kt)';
-             var output_year = document.getElementById("yrdemo");
-             var toolTipValue='CO2 emissions (kt)';
-             //console.log(output_year);
-            var yearVisedata={};
-            var yearAuto=1991;
-            function trig() {  
-                yearAuto++;
-                document.getElementById("animationSpan").innerHTML = yearAuto;
-                if(yearAuto>=2012){
-                    document.getElementById("yr").style.display="block";
-                    document.getElementById("yrdemo").style.display="block";
-                    document.getElementById("animationSpan").style.display="none";
-                    clearInterval(timeInterval);
-                    yearAuto=1991;
-                    return;
-                }
-                year=yearAuto;
-                d3.queue()
-                .defer(d3.json,"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-                    .defer(d3.csv,"concap.csv")
-                    .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
-                    .await(ready)
-            }
-           
-            function addInterval(){
-                document.getElementById("yr").style.display="none";
-                document.getElementById("yrdemo").style.display="none";
-                document.getElementById("animationSpan").style.display="block";
-                
-                timeInterval = setInterval(function() { trig(); }, 200);
-            }
-            function StopInterval(){
-                document.getElementById("yr").style.display="block";
-
-            }
-
-            function changeSlider(){
-               // console.log("trigger");
-
-            }
-
-
-
-
-            document.getElementById("yr").addEventListener("change", function() {
-                output_year.value=this.value;
-                year=this.value;
-                
-            d3.queue()
-            .defer(d3.json,"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-                .defer(d3.csv,"concap.csv")
-                .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
-                .await(ready)
-            });
-
-            
-
-            function myFunction() {
-              
-                 downDownValue = document.getElementById("mySelect").value;
-                 yearAuto=1991;
-              
-             //  console.log(downDownValue);
-               if(downDownValue=='CO2 emissions (kt)'){
-                toolTipValue='CO2 emissions (kt)';
-               }
-               else if(downDownValue=='Methane emissions (kt of CO2 equivalent)'){
-                toolTipValue='Methane emissions (kt)';
-               }
-               else if(downDownValue=='Nitrous oxide emissions (thousand metric tons of CO2 equivalent)'){
-                toolTipValue='Nitrous oxide emissions (kt)';
-               }
-               else if(downDownValue=='Population, total'){
-                toolTipValue='Total Population ';
-               }
-               else if(downDownValue=='Total greenhouse gas emissions (kt of CO2 equivalent)'){
-                toolTipValue='Total greenhouse (kt)';
-               }
-
-               d3.queue()
-                .defer(d3.json,"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-                .defer(d3.csv,"concap.csv")
-                .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
-                .await(ready)
-
-
-            }
-            var yearVisedata=[];
-            const tooltip = d3.select("body").append("div")
-                            .attr("class", "tooltip")
-                            .style("opacity", 0);
-
-            var margin = { top: 50, right: 50, bottom: 50, left: 0 },
-                width = 700 - margin.left - margin.right,
-                height = 400 - margin.top - margin.bottom;
-            
-            var svg = d3.select('.map').append('svg')
-                .attr('width', width + margin.left + margin.right)
-                .attr('height', height + margin.top + margin.bottom)
-                .append('g')
-                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-            
-                var projection = d3.geoMercator()
-                                .translate([width/2,height/2])
-                                .scale(90);
-
-                var path = d3.geoPath()
-                            .projection(projection);     
-
-                var f= d3.queue()
-                .defer(d3.json,"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-                .defer(d3.csv,"concap.csv")
-                .defer(d3.csv,"https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv")
-                .await(ready)
-
-                var yearVisedata=[];    
-
-             function ready(error,topo,dataset,worldBankData){
-              renderPieChart(worldBankData);
-                 var count=0;
-                 var maxValueCo2=0;
-                 var countries = topo.features;
-               //  console.log(year);
-                 for(var i=0;i<worldBankData.length;i++){
-                        if(worldBankData[i].Year==year){
-                            if(worldBankData[i][downDownValue]>maxValueCo2){
-                                maxValueCo2=worldBankData[i][downDownValue];
-                            }
-                            count++;
-                        }
-                    }
-                var color =d3.scaleLinear()
-                            .domain([3, maxValueCo2])
-                            .range(["#eba7ac","#9e242d"]);
-
-                var colorScale = d3.scaleThreshold()
-                            .domain([1000, 10000, 100000, 300000, 1000000, 5000000])
-                            .range(d3.schemeBlues[7]);
-
-
-                 svg.selectAll(".country")
-                 .data(countries)
-                 .enter()
-                    .append("path")
-                    .attr("d",path)
-                    .attr("fill",function(d,i){
-                        var t=d.id;
-                        var colorValue=null;
-                        for(var i=0;i<worldBankData.length;i++){
-                            if(worldBankData[i].Year==year){
-                                if(worldBankData[i]['Country Code']==t){
-                                    colorValue=worldBankData[i][downDownValue];
-                                }
-                            }
-                        }
-                        return colorScale(colorValue);
-                    })
-                    .on('mouseover',function(d){
-                         var t=d.id;
-                         var hoverData=null;
-                        // console.log(t);
-                            for(var i=0;i<worldBankData.length;i++){
-                                 if(worldBankData[i].Year==year){
-                                     if(worldBankData[i]['Country Code']==t){
-                                     //console.log("yes");
-                                     //console.log(worldBankData[i]);
-                                     hoverData=worldBankData[i];
-                                     //console.log(hoverData);
-                                     tooltip
-                                    .style("opacity", 0.8)
-                                    .html("Name: " + hoverData['Country Name'] +
-                                    "<br />"+toolTipValue+" " + hoverData[downDownValue]
-                                      )
-                                    .style('left', (d3.event.pageX) + 'px')
-                                     .style('top', (d3.event.pageY) + 'px');
-                                     }
-                                    
-                                 }
-                                 
-                            }
-                    })
-                    .on('mouseout',function(d){
-                         d3.select(this).classed("selected",false)
-                         d3.select(this)
-                         tooltip.style("opacity", 0);
-                         
-                    });
-             }    
-
-             function renderPieChart(worldBankData) {
-              document.getElementsByClassName("piechart")[0].innerHTML = "";
-        //console.log("rendering pie chart");
-        let nonCountryArray = [
-          "East Asia & Pacific (excluding high income)",
-          "East Asia & Pacific (IDA & IBRD countries)",
-          "Early-demographic dividend",
-          "element Middle East & North Africa (IDA & IBRD countries)",
-          "Europe & Central Asia (IDA & IBRD countries)",
-          "East Asia & Pacific",
-          "IBRD only",
-          "Late-demographic dividend",
-          "Latin America & Caribbean (excluding high income)",
-          "Middle East & North Africa (excluding high income)",
-          "Middle East & North Africa (IDA & IBRD countries)",
-          "Pacific island small states",
-          "Sub-Saharan Africa (IDA & IBRD countries)",
-          "Upper middle income",
-          "Central Europe and the Baltics",
-          "Europe & Central Asia (excluding high income)",
-          "Europe & Central Asia",
-          "Fragile and conflict affected situations",
-          "Heavily indebted poor countries (HIPC)",
-          "High income",
-          "IDA & IBRD total",
-          "Low & middle income",
-          "Middle income",
-          "OECD members",
-          "Post-demographic dividend",
-          "Pre-demographic dividend",
-          "Sub-Saharan Africa (excluding high income)",
-          "Caribbean small states",
-          "Least developed countries: UN classification",
-          "South Asia (IDA & IBRD)",
-          "South Asia",
-          "Latin America & the Caribbean (IDA & IBRD countries)",
-          "Latin America & Caribbean",
-          "Low income",
-          "European Union",
-          "World",
-          "Lower middle income",
-          "Middle East & North Africa",
-          "Euro area",
-          "Arab World",
-          "IDA total",
-          "Sub-Saharan Africa",
-          "IDA blend",
-          "IDA only",
-          "Small states",
-          "Other small states"
-        ];
-        // let sortIndex = "Country Name";
-        let sortIndex = downDownValue;
-        let sortedWorldBankData = [];
-        // sortedWorldBankData = worldBankData.slice().sort((a, b) => d3.descending(a[sortIndex], b[sortIndex]));
-        sortedWorldBankData = worldBankData
-          .slice()
-          .sort((a, b) =>
-            d3.descending(parseInt(a[sortIndex]), parseInt(b[sortIndex]))
-          );
-        // for each element in worldBankData if the country name is in nonCountyArrays[] do not add it to cleaned array
-        // console.log(year);
-        cleanedWorldBankData = [];
-        sortedWorldBankData.forEach(element => {
-          // console.log(element["Year"]);
-          if (
-            element["Year"] == year &&
-            !nonCountryArray.includes(element["Country Name"])
-          ) {
-            // console.log(element["Country Name"]);
-            return cleanedWorldBankData.push(element); // filter remove
-          }
-        });
-        //console.log("cleanedWorldBankData");
-        //console.log(cleanedWorldBankData);
-        //console.log("sortedWorldBankData");
-        // console.log(sortedWorldBankData);
-        var data = [
-          // { name: "USA", value: 60 },
-          // { name: "UK", value: 20 },
-          // { name: "Canada", value: 30 },
-          // { name: "Maxico", value: 15 },
-          // { name: "Japan", value: 10 }
-        ];
-        // push top 10 values in data
-        for (i = 0; i < 10; i++) {
-        
-          data.push({
-            name: cleanedWorldBankData[i]["Country Name"],
-            value: cleanedWorldBankData[i][sortIndex]
-          });
-        }
-       // console.log(data);
-        renderBarChart(data);
-        var text = "";
-        var width = 200;
-        var height = 200;
-        var thickness = 40;
-        var duration = 750;
-        var padding = 10;
-        var opacity = 0.8;
-        var opacityHover = 1;
-        var otherOpacityOnHover = 0.8;
-        var tooltipMargin = 13;
-        var radius = Math.min(width - padding, height - padding) / 2;
-        var color = d3.scaleOrdinal(d3.schemeCategory10);
-        var svg = d3
-          .select(".piechart")
-          .append("svg")
-          .attr("class", "pie")
-          .attr("width", width)
-          .attr("height", height);
-        var g = svg
-          .append("g")
-          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-        var arc = d3
-          .arc()
-          .innerRadius(0)
-          .outerRadius(radius);
-        var pie = d3
-          .pie()
-          .value(function(d) {
-            return d.value;
-          })
-          .sort(null);
-        var path = g
-          .selectAll("path")
-          .data(pie(data))
-          .enter()
-          .append("g")
-          .append("path")
-          .attr("d", arc)
-          .attr("fill", (d, i) => color(i))
-          .style("opacity", opacity)
-          .style("stroke", "white")
-          .on("mouseover", function(d) {
-            d3.selectAll("path").style("opacity", otherOpacityOnHover);
-            d3.select(this).style("opacity", opacityHover);
-            let g = d3
-              .select("svg")
-              .style("cursor", "pointer")
-              .append("g")
-              .attr("class", "tooltip")
-              .style("opacity", 0);
-            g.append("text")
-              .attr("class", "name-text")
-              .text(`${d.data.name} (${d.data.value})`)
-              .attr("text-anchor", "middle");
-            let text = g.select("text");
-            let bbox = text.node().getBBox();
-            let padding = 2;
-            g.insert("rect", "text")
-              .attr("x", bbox.x - padding)
-              .attr("y", bbox.y - padding)
-              .attr("width", bbox.width + padding * 2)
-              .attr("height", bbox.height + padding * 2)
-              .style("fill", "white")
-              .style("opacity", 0.75);
-          })
-          .on("mousemove", function(d) {
-            let mousePosition = d3.mouse(this);
-            let x = mousePosition[0] + width / 2;
-            let y = mousePosition[1] + height / 2 - tooltipMargin;
-            let text = d3.select(".tooltip text");
-            let bbox = text.node().getBBox();
-            if (x - bbox.width / 2 < 0) {
-              x = bbox.width / 2;
-            } else if (width - x - bbox.width / 2 < 0) {
-              x = width - bbox.width / 2;
-            }
-            if (y - bbox.height / 2 < 0) {
-              y = bbox.height + tooltipMargin * 2;
-            } else if (height - y - bbox.height / 2 < 0) {
-              y = height - bbox.height / 2;
-            }
-            d3.select(".tooltip")
-              .style("opacity", 1)
-              .attr("transform", `translate(${x}, ${y})`);
-          })
-          .on("mouseout", function(d) {
-            d3.select("svg")
-              .style("cursor", "none")
-              .select(".tooltip")
-              .remove();
-            d3.selectAll("path").style("opacity", opacity);
-          })
-          .on("touchstart", function(d) {
-            d3.select("svg").style("cursor", "none");
-          })
-          .each(function(d, i) {
-            this._current = i;
-          });
-        let legend = d3
-          .select("#chart")
-          .append("div")
-          .attr("class", "legend")
-          .style("margin-top", "30px");
-        let keys = legend
-          .selectAll(".key")
-          .data(data)
-          .enter()
-          .append("div")
-          .attr("class", "key")
-          .style("display", "flex")
-          .style("align-items", "center")
-          .style("margin-right", "20px");
-        keys
-          .append("div")
-          .attr("class", "symbol")
-          .style("height", "10px")
-          .style("width", "10px")
-          .style("margin", "5px 5px")
-          .style("background-color", (d, i) => color(i));
-        keys
-          .append("div")
-          .attr("class", "name")
-          .text(d => `${d.name} (${d.value})`);
-        keys.exit().remove();
-             }
-             function renderBarChart(data) {
-        document.getElementsByClassName("barchart")[0].innerHTML = '';
-        const margin = { top: 20, right: 20, bottom: 30, left: 50 };
-        const width = 960 - margin.left - margin.right;
-        const height = 900 - margin.top - margin.bottom;
-        var color = d3.scaleOrdinal(d3.schemeCategory10);
-        const xScale = d3
-          .scaleBand()
-          .range([0, width])
-          .round(true)
-          .paddingInner(0.1); // space between bars (it's a ratio)
-        const yScale = d3.scaleLinear().range([height, 0]);
-        const xAxis = d3.axisBottom().scale(xScale);
-        const yAxis = d3
-          .axisLeft()
-          .scale(yScale)
-          .ticks(10);
-            
-        const svg = d3
-          .select(".barchart")
-          .append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-          .attr("transform", `translate(${margin.left}, ${margin.right})`);
-        const tooltip = d3
-          .select(".barchart")
-          .append("div")
-          .attr("class", "tooltip")
-          .style("opacity", 0);
-        xScale.domain(data.map(d => d.name));
-        yScale.domain([0, d3.max(data, d => d.value)]);
-        svg
-          .append("g")
-          .attr("class", "x axis")
-          .attr("transform", `translate(0, ${height})`)
-          .call(xAxis);
-        svg
-          .append("g")
-          .attr("class", "y axis")
-          .call(yAxis)
-          .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", 6)
-          .attr("dy", ".71em")
-          .style("text-anchor", "end")
-          .text("Frequency");
-        svg
-          .selectAll(".bar")
-          .data(data)
-          .enter()
-          .append("rect")
-          .attr("class", "bar")
-          .attr("x", d => xScale(d.name))
-          .attr("width", xScale.bandwidth())
-          .attr("y", d => yScale(d.value/14))
-          .attr("height", d => (height-yScale(d.value/14)))
-          .attr("fill",(d, i) => color(i))
-          .on("mouseover", d => {
-            tooltip
-              .transition()
-              .duration(200)
-              .style("opacity", 0.9);
-            tooltip
-              .html(`Frequency: <span>${d.value}</span>`)
-              .style("left", `${d3.event.layerX}px`)
-              .style("top", `${d3.event.layerY - 28}px`);
-          })
-          .on("mouseout", () =>
-            tooltip
-              .transition()
-              .duration(500)
-              .style("opacity", 0)
-          );
-      }
-
-           // console.log("above");
-            //console.log("after ");
-        
-        </script>
-        <style>
-      .bar {
-        {% comment %} fill: #4682b4; {% endcomment %}
-      }
-      .bar:hover {
-        {% comment %} fill: #17bf3c; {% endcomment %}
-      }
-      .axis {
-        font-family: "Lobster";
-        font-size: 12px;
-      }
-      .axis path,
-      .axis line {
-        fill: none;
-        shape-rendering: crispEdges;
-        stroke: #000;
-      }
-      .x.axis path {
-        display: none;
-      }
-      .y.axis text {
-        fill: #000;
-      }
-      /* .tooltip {
-       
-        border: 0;
-        border-radius: 8px;
-        font-family: "Lobster";
-        font-size: 12px;
-        font-weight: bold;
-        height: 20px;
-        padding: 2px;
-        pointer-events: none;
-        position: absolute;
-        text-align: center;
-        width: 120px;
-      } */
-      .tooltip span {
-        color: #d11515;
-      }
-    </style>
-    </body>
+    <script src="script.js"></script>
+  </body>
 </html>
