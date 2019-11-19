@@ -1,8 +1,13 @@
+$(window).on('load',function(){
+  $('#myModalIntro').modal('show');
+});
+
+
 var number = 123;
 var year = 1992;
 var timeInterval;
 var downDownValue = "CO2 emissions (kt)";
-var output_year = document.getElementById("yrdemo");
+var output_year = document.getElementById("yy");
 var toolTipValue = "CO2 emissions (kt)";
 //console.log(output_year);
 var yearVisedata = {};
@@ -12,10 +17,25 @@ function trig() {
   document.getElementById("animationSpan").innerHTML = yearAuto;
   if (yearAuto >= 2012) {
     document.getElementById("yr").style.display = "block";
-    document.getElementById("yrdemo").style.display = "block";
+   document.getElementById("yy").style.display = "block";
     document.getElementById("animationSpan").style.display = "none";
+    document.getElementById("buttonStop").style.display = "none";
+    document.getElementById("buttonStart").style.display = "block";
     clearInterval(timeInterval);
     yearAuto = 1991;
+    year=1992;
+   
+  d3.queue()
+    .defer(
+      d3.json,
+      "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"
+    )
+    .defer(d3.csv, "concap.csv")
+    .defer(
+      d3.csv,
+      "https://raw.githubusercontent.com/ZeningQu/World-Bank-Data-by-Indicators/master/climate-change/climate-change.csv"
+    )
+    .await(ready);
     return;
   }
   year = yearAuto;
@@ -40,15 +60,23 @@ function numberWithCommas(x) {
 
 function addInterval() {
   document.getElementById("yr").style.display = "none";
-  document.getElementById("yrdemo").style.display = "none";
+  document.getElementById("yy").style.display = "none";
   document.getElementById("animationSpan").style.display = "block";
-
+  document.getElementById("buttonStop").style.display = "block";
+  document.getElementById("buttonStart").style.display = "none";
+  
   timeInterval = setInterval(function() {
     trig();
   }, 200);
 }
 function StopInterval() {
   document.getElementById("yr").style.display = "block";
+  document.getElementById("yy").style.display = "block";
+  document.getElementById("animationSpan").style.display = "none";
+  document.getElementById("buttonStop").style.display = "none";
+  document.getElementById("buttonStart").style.display = "block";
+  year=1991;
+  clearInterval(timeInterval);
 }
 
 function changeSlider() {
@@ -56,8 +84,9 @@ function changeSlider() {
 }
 
 document.getElementById("yr").addEventListener("change", function() {
-  output_year.value = this.value;
   year = this.value;
+  output_year.value = this.value;
+  
 
   d3.queue()
     .defer(
@@ -148,6 +177,10 @@ var f = d3
   .await(ready);
 
 var yearVisedata = [];
+var m = svg.append("g")
+        .attr("class","legendThreshold")
+        .attr("transform","translate(15,200)")
+        .append("text");
 
 function ready(error, topo, dataset, worldBankData) {
   renderMap(topo, worldBankData);
@@ -266,6 +299,19 @@ function renderMap(topo, worldBankData) {
     .scaleThreshold()
     .domain([1000, 10000, 100000, 300000, 1000000, 5000000])
     .range(d3.schemeOranges[7]);
+  m.attr("class","caption")
+    .attr("x",0)
+    .attr("y",-6)
+    .text(toolTipValue);
+
+
+    var labels = ['0', '1-1000', '1000-10000', '10000-100000', '100000-300000', '300000-1000000', '>1000000'];
+    var legend = d3.legendColor()
+        .labels(function (d) { return labels[d.i]; })
+        .shapePadding(4)
+        .scale(colorScale);
+    svg.select(".legendThreshold")
+        .call(legend);  
 
   svg
     .selectAll(".country")
