@@ -375,7 +375,7 @@ function renderPieChart(dataForCharts) {
         .style("opacity", 0);
       g.append("text")
         .attr("class", "name-text")
-        .text(`${d.data.name} (${numberWithCommas(d.data.value)} Kilo Tons)`)
+        .text(`${d.data.name} (${numberWithCommas(d.data.value)} kt)`)
         .attr("text-anchor", "middle");
       let text = g.select("text");
       let bbox = text.node().getBBox();
