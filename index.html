@@ -1,0 +1,205 @@
+<!DOCTYPE html> <!--[if gt IE 8]><!-->
+  <html class="no-js">
+    <!--<![endif]-->
+    <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <title></title>
+      <meta name="description" content="" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link rel="stylesheet" href="" />
+    </head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  
+    <link rel="stylesheet" href="style.css" />
+    <!-- <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"
+    /> -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
+    <body>
+      <!-- <div class="bg-info clearfix">
+              <button type="button" class="btn btn-secondary float-left">Example Button floated left</button>
+              <button type="button" class="btn btn-secondary float-right">Example Button floated right</button>
+            </div> -->
+  
+      <!-- <br> -->
+      <!-- <input type="button" class="btn btn-info" value="View Animation" onclick="addInterval()"> -->
+  
+      <div class="top-banner text-center">
+        <h2 class="">World Climate Change</h2>
+        <p>CSC196v - Interactive Visualization Assignment</p>
+      </div>
+      <div class="container-fluid">
+        <div class="row">
+          <!-- Controls -->
+          <div class="col-sm-12">
+            <div class="top-controls">
+                <div class="data-dropdown-container">
+  
+                
+                    <b>Select Dataset</b>
+                <label for="favcity">
+                  
+                  <select id="mySelect" name="slct" onchange="myFunction()">
+                    <option selected value="CO2 emissions (kt)">
+                      CO2 emissions</option
+                    >
+  
+                    <option
+                      value="Nitrous oxide emissions (thousand metric tons of CO2 equivalent)"
+                    >
+                      Nitrous oxide emissions</option
+                    >
+                    <option
+                      value="Total greenhouse gas emissions (kt of CO2 equivalent)"
+                      >Total greenhouse gas</option
+                    >
+                    
+                  </select>
+                </label>
+              </div>
+  
+                <div class="year-slider-container">
+                  <span><b>Select Year: </b> <output id="yy" value="1992">1992</output></span>
+                    <div class="slider-position" id="slider-section">
+                        <input
+                          id="yr"
+                          type="range"
+                          min="1992"
+                          max="2012"
+                          step="1"
+                          value="1967"
+                          class="slider"
+                          style="width: 100%"
+                        />
+                    
+                        
+                  </div>
+                  <span
+                id="animationSpan"
+                style="display: none; font-size: 30px; font-style: italic;"
+              ></span>
+                </div>
+            
+                <div class="right-btn-container">
+  
+                  
+            <button type="button" id="buttonStart" class="start-animation-btn" onclick="addInterval()">Start Animation</button>
+            <button type="button" id="buttonStart" data-toggle="modal" class="start-description-btn"  data-target=".bd-example-modal-lg" >Description</button>  
+            <button type="button" class="btn btn-danger btn-sm" id="buttonStop" style="display:none;" onclick="StopInterval()"> Stop Animation </button>
+          </div>
+              
+              </div>
+            
+            </div>
+          </div>
+  
+          <div class="row">
+  
+            <!-- Map -->
+            <div class="col-sm-6">
+              <div class="map"></div>
+            </div>
+            
+            <!-- right col -->
+            <div class="col-sm-6">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div id="piechart"></div>
+                </div>
+              </div>
+              
+              <div class="col-sm-12">
+                <div id="barchart"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <footer class="text-center"><p>Submitted By: Rutvik Patel, Suraj Rawat, Gaurav Bora</p></footer>
+  
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="myModal">
+                <div class="modal-dialog modal-dialog-scrollable" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class=" modal-title" id="exampleModalScrollableTitle"><span class="text-center" >Welcome</span></h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <h6>Dataset</h6>
+                      <p>The dataset we have selected is "World Climate Change". The dataset contains information about the factors (Co2,No2 ETC) which affect climate change around the world.</p>
+                      <p>This visualisation provides us with top countries which has the highest proportions of harmful gases in their atmosphere.
+                       The slider value represents or selects a particular year and for each selected slider position value , the 3 charts -World Map, BarChart, Pie Charts change in value.</p>
+                      <p> Color coding is used to code different countries .
+                        Also we have automated and animated the sliding motion of (year) slider and it shows in a brief 5 seconds ,the gas proportions changes across the globe, with the change in slider for that year.
+                       For the World Map ,color 'Orange' represents the maximum level of gas concentration and 'white' represents minimum level.
+                       </p>
+                        <br><u>Team and Work Distribution</u><br>
+                       <p>Rutvik Patel => (33%)<br>
+                          Suraj Rawat => (33%) <br>
+                          Gaurav Bora => (33%) <br>
+                       Final Contribution =33 +33 +33 +1%(Write-Up)=100%
+                         <br><b>Thing we learned -><b><br>
+                       1)Completed World Map Rendereing.<br>
+                       2)Scaling world map.<br>
+                       3)Added legends for the map and used proper color coding.<br>
+                       4)Worked on Tool-Tip.<br> 
+                       5)More Interactivity via mouse,slider etc.<br>
+                       6)Best Work -Introducing animation. Displaying yearly changes in smooth transition from year 1992 - 2012 and showing yearly data for harmful gases across the globe.<br>
+                       <br>
+                       </p>
+                      <hr>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+         <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="myModalIntro">
+                <div class="modal-dialog modal-dialog-scrollable" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class=" modal-title" id="exampleModalScrollableTitle"><span class="text-center" >Welcome</span></h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <h6><I>Morning Everyone,</I></h6> 
+                      <b><p font-size="50px">"There's one issue that will define contours of this century more dramatically than any other, 
+                        and that is urgent threat of changing climate" - <strong>Barack Obama(Former President of U.S.A)<strong></b>
+                      </p>
+                      </p>
+                      <hr>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" data-dismiss="modal">Proceed</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+  
+      <script src="script.js"></script>
+    </body>
+  </html>
+  
