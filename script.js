@@ -587,3 +587,95 @@ function renderBarChart(data) {
         .style("opacity", 0)
     );
 }
+
+
+function renderBarChart(data) {
+  document.getElementById("linechart").innerHTML = "";
+
+  let margin = { top: 20, right: 20, bottom: 30, left: 70 };
+  let width = 700 - margin.left - margin.right;
+  let height = 260 - margin.top - margin.bottom;
+  let color = d3.scaleOrdinal(d3.schemeCategory10);
+
+  let xScale = d3
+    .scaleBand()
+    .range([0, width])
+    .round(true)
+    .paddingInner(0.1); // space between bars (it's a ratio)
+
+  let maxVal = data[0].value + 500000;
+
+  let yScale = d3
+    .scaleLinear()
+    .domain([0, maxVal])
+    .range([height, 0]);
+
+  let xAxis = d3.axisBottom().scale(xScale);
+
+  let yAxis = d3
+    .axisLeft()
+    .scale(yScale)
+    .ticks(10);
+
+  let svg = d3
+    .select("#barchart")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.right})`);
+  let tooltipBar = d3
+    .select("#barchart")
+    .append("div")
+    .attr("class", "tooltip-bar")
+    .style("opacity", 0);
+
+  xScale.domain(data.map(d => d.name));
+  //   yScale.domain([0, d3.max(data, d => d.value)]);
+
+  svg
+    .append("g")
+    .attr("class", "x axis")
+    .attr("transform", `translate(0, ${height})`)
+    .call(xAxis);
+  svg
+    .append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text(toolTipValue);
+  svg
+    .selectAll(".bar")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
+    .attr("x", d => xScale(d.name))
+    .attr("width", xScale.bandwidth())
+    .attr("y", d => yScale(d.value))
+    .attr("height", d => height - yScale(d.value))
+    .attr("fill", (d, i) => color(i))
+    .on("mouseover", d => {
+      tooltipBar
+        .transition()
+        .duration(0)
+        .style("opacity", 0.9);
+      tooltipBar
+        .html(`${toolTipValue} <span>${numberWithCommas(d.value)}</span>`)
+        .style("pointer-events", `none`)
+        .style("left", `${d3.event.layerX}px`)
+        .style("top", `${d3.event.layerY - 28}px`);
+    })
+    .on("mouseout", () =>
+      tooltipBar
+        .transition()
+        .duration(0)
+        .style("opacity", 0)
+    );
+}
+
+
