@@ -1,6 +1,11 @@
 $(window).on("load", function() {
-  $("#myModalIntro").modal("show");
+  // $("#myModalIntro").modal("show");
 });
+
+// Global variables for line chart
+var country1 = "China";
+var country2 = "United Kingdom";
+var lineChartWorldBankData = {};
 
 var number = 123;
 var year = 1992;
@@ -182,15 +187,17 @@ var m = svg
   .attr("transform", "translate(15,200)")
   .append("text");
 
+
+// Global WorldBankData object for Line Chart
 var lineChartWorldBankData = {};
 
 function ready(error, topo, dataset, worldBankData) {
-  lineChartWorldBankData = worldBankData;
+  lineChartWorldBankData = JSON.parse(JSON.stringify(worldBankData));
   renderMap(topo, worldBankData);
   cleanedWorldBankData = filterTopData(worldBankData);
   renderPieChart(cleanedWorldBankData);
   renderBarChart(cleanedWorldBankData);
-  renderLineChart(error, worldBankData);
+  readLineChart(lineChartWorldBankData);
 }
 
 function filterTopData(worldBankData) {
@@ -256,6 +263,7 @@ function filterTopData(worldBankData) {
   // for each element in worldBankData if the country name is in nonCountyArrays[] do not add it to cleaned array
   // console.log(year);
   cleanedWorldBankData = [];
+
   sortedWorldBankData.forEach(element => {
     // console.log(element["Year"]);
     if (
@@ -276,6 +284,8 @@ function filterTopData(worldBankData) {
       value: cleanedWorldBankData[i][sortIndex]
     });
   }
+
+  console.log(dataForCharts);
 
   return dataForCharts;
 }
@@ -601,99 +611,98 @@ function renderBarChart(data) {
     );
 }
 
-function renderBarChart(data) {
-  document.getElementById("linechart").innerHTML = "";
+// function renderLineChart(data) {
+//   document.getElementById("linechart").innerHTML = "";
 
-  let margin = { top: 20, right: 20, bottom: 30, left: 70 };
-  let width = 700 - margin.left - margin.right;
-  let height = 260 - margin.top - margin.bottom;
-  let color = d3.scaleOrdinal(d3.schemeCategory10);
+//   let margin = { top: 20, right: 20, bottom: 30, left: 70 };
+//   let width = 700 - margin.left - margin.right;
+//   let height = 260 - margin.top - margin.bottom;
+//   let color = d3.scaleOrdinal(d3.schemeCategory10);
 
-  let xScale = d3
-    .scaleBand()
-    .range([0, width])
-    .round(true)
-    .paddingInner(0.1); // space between bars (it's a ratio)
+//   let xScale = d3
+//     .scaleBand()
+//     .range([0, width])
+//     .round(true)
+//     .paddingInner(0.1); // space between bars (it's a ratio)
 
-  let maxVal = data[0].value + 500000;
+//   let maxVal = data[0].value + 500000;
 
-  let yScale = d3
-    .scaleLinear()
-    .domain([0, maxVal])
-    .range([height, 0]);
+//   let yScale = d3
+//     .scaleLinear()
+//     .domain([0, maxVal])
+//     .range([height, 0]);
 
-  let xAxis = d3.axisBottom().scale(xScale);
+//   let xAxis = d3.axisBottom().scale(xScale);
 
-  let yAxis = d3
-    .axisLeft()
-    .scale(yScale)
-    .ticks(10);
+//   let yAxis = d3
+//     .axisLeft()
+//     .scale(yScale)
+//     .ticks(10);
 
-  let svg = d3
-    .select("#barchart")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", `translate(${margin.left}, ${margin.right})`);
-  let tooltipBar = d3
-    .select("#barchart")
-    .append("div")
-    .attr("class", "tooltip-bar")
-    .style("opacity", 0);
+//   let svg = d3
+//     .select("#barchart")
+//     .append("svg")
+//     .attr("width", width + margin.left + margin.right)
+//     .attr("height", height + margin.top + margin.bottom)
+//     .append("g")
+//     .attr("transform", `translate(${margin.left}, ${margin.right})`);
+//   let tooltipBar = d3
+//     .select("#barchart")
+//     .append("div")
+//     .attr("class", "tooltip-bar")
+//     .style("opacity", 0);
 
-  xScale.domain(data.map(d => d.name));
-  //   yScale.domain([0, d3.max(data, d => d.value)]);
+//   xScale.domain(data.map(d => d.name));
+//   //   yScale.domain([0, d3.max(data, d => d.value)]);
 
-  svg
-    .append("g")
-    .attr("class", "x axis")
-    .attr("transform", `translate(0, ${height})`)
-    .call(xAxis);
-  svg
-    .append("g")
-    .attr("class", "y axis")
-    .call(yAxis)
-    .append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", 6)
-    .attr("dy", ".71em")
-    .style("text-anchor", "end")
-    .text(toolTipValue);
-  svg
-    .selectAll(".bar")
-    .data(data)
-    .enter()
-    .append("rect")
-    .attr("class", "bar")
-    .attr("x", d => xScale(d.name))
-    .attr("width", xScale.bandwidth())
-    .attr("y", d => yScale(d.value))
-    .attr("height", d => height - yScale(d.value))
-    .attr("fill", (d, i) => color(i))
-    .on("mouseover", d => {
-      tooltipBar
-        .transition()
-        .duration(0)
-        .style("opacity", 0.9);
-      tooltipBar
-        .html(`${toolTipValue} <span>${numberWithCommas(d.value)}</span>`)
-        .style("pointer-events", `none`)
-        .style("left", `${d3.event.layerX}px`)
-        .style("top", `${d3.event.layerY - 28}px`);
-    })
-    .on("mouseout", () =>
-      tooltipBar
-        .transition()
-        .duration(0)
-        .style("opacity", 0)
-    );
-}
+//   svg
+//     .append("g")
+//     .attr("class", "x axis")
+//     .attr("transform", `translate(0, ${height})`)
+//     .call(xAxis);
+//   svg
+//     .append("g")
+//     .attr("class", "y axis")
+//     .call(yAxis)
+//     .append("text")
+//     .attr("transform", "rotate(-90)")
+//     .attr("y", 6)
+//     .attr("dy", ".71em")
+//     .style("text-anchor", "end")
+//     .text(toolTipValue);
+//   svg
+//     .selectAll(".bar")
+//     .data(data)
+//     .enter()
+//     .append("rect")
+//     .attr("class", "bar")
+//     .attr("x", d => xScale(d.name))
+//     .attr("width", xScale.bandwidth())
+//     .attr("y", d => yScale(d.value))
+//     .attr("height", d => height - yScale(d.value))
+//     .attr("fill", (d, i) => color(i))
+//     .on("mouseover", d => {
+//       tooltipBar
+//         .transition()
+//         .duration(0)
+//         .style("opacity", 0.9);
+//       tooltipBar
+//         .html(`${toolTipValue} <span>${numberWithCommas(d.value)}</span>`)
+//         .style("pointer-events", `none`)
+//         .style("left", `${d3.event.layerX}px`)
+//         .style("top", `${d3.event.layerY - 28}px`);
+//     })
+//     .on("mouseout", () =>
+//       tooltipBar
+//         .transition()
+//         .duration(0)
+//         .style("opacity", 0)
+//     );
+// }
 
-var country1 = "China";
-var country2 = "United Kingdom";
+/* Line chart  */
 
-var lineChartWorldBankData = {};
+var dataColumn, realData, realData2;
 
 function countryInput1Changed(e) {
   country1 = e.value;
@@ -714,224 +723,276 @@ function countryInput2Changed(e) {
 // .await(readyline);
 
 function updateLineChart() {
-  error = "";
-  console.log(error, lineChartWorldBankData, country1, country2);
+  console.log(country1, country2);
   if (country1 && country2)
-    renderLineChart(error, lineChartWorldBankData, country1, country2);
+    readLineChart(country1, country2);
 }
 
-function renderLineChart(error, worldBankData, country1, country2) {
-  lineChartWorldBankData = worldBankData;
+function readLineChart(country1, country2) {
+
+  // document.getElementById('linechart').innerHTML = "";
+
+  var data = [
+    {
+      'timescale': '早', 
+      'totalAmount': 20, 
+      'totalProfit': 200, 
+      'totalRevenue': 400
+    },
+    {
+      'timescale': '午', 
+      'totalAmount': 40, 
+      'totalProfit': 300, 
+      'totalRevenue': 600
+    },
+    {
+      'timescale': '晚', 
+      'totalAmount': 70, 
+      'totalProfit': 100, 
+      'totalRevenue': 800
+    },
+    {
+      'timescale': '深夜', 
+      'totalAmount': 100, 
+      'totalProfit': 800, 
+      'totalRevenue': 900
+    }
+  ];
+
+  console.log(lineChartWorldBankData);
   console.log("readline function");
-  console.log(worldBankData);
-  loadFirstField(worldBankData, country1);
 
-  var width = 1350;
-  var height = 300;
-  var margin = 50;
-  var duration = 250;
-  var lineOpacity = "0.25";
-  var lineOpacityHover = "0.85";
-  var otherLinesOpacityHover = "0.1";
-  var lineStroke = "1.5px";
-  var lineStrokeHover = "2.5px";
-  var circleOpacity = "0.85";
-  var circleOpacityOnLineHover = "0.25";
-  var circleRadius = 3;
-  var circleRadiusHover = 6;
+  if(!country1 || !country2) {
+    country1 = 'China';
+    country2 = 'United Kingdom';
+  } ;
 
-  var parseDate = d3.timeParse("%Y");
-  dataColumn.forEach(function(d) {
-    console.log(d);
-    d.values.forEach(function(d) {
-      d.date = parseDate(d.date);
-      d.urbanPopulation = +d.urbanPopulation;
-    });
+  loadLineChartData();
+
+  var trendsText = {'totalAmount': '銷售數量', 'totalProfit': '總收入金額', 'totalRevenue': '總分潤金額'};
+  
+  // set the dimensions and margins of the graph
+  var margin = { top: 20, right: 80, bottom: 30, left: 50 },
+      linechartElem = document.getElementById('linechart2')
+      svg = d3.select('#linechart svg'),
+      width = +svg.attr('width') - margin.left - margin.right,
+      height = +svg.attr('height') - margin.top - margin.bottom;
+  var g = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  
+  // set the ranges
+  var x = d3.scaleBand().rangeRound([0, width]).padding(1),
+      y = d3.scaleLinear().rangeRound([height, 0]),
+      z = d3.scaleOrdinal(['#036888','#0D833C','#D2392A']);
+  
+  // define the line
+  var line = d3.line()
+    .x(function(d) { return x(d.timescale); })
+    .y(function(d) { return y(d.total); });
+  
+  // scale the range of the data
+  z.domain(d3.keys(data[0]).filter(function(key) {
+    return key !== "timescale";
+  }));
+  
+  var trends = z.domain().map(function(name) {
+    return {
+      name: name,
+      values: data.map(function(d) {
+        return {
+          timescale: d.timescale,
+          total: +d[name]
+        };
+      })
+    };
   });
-  var xScale = d3
-    .scaleTime()
-    .domain(d3.extent(dataColumn[0].values, d => d.date))
-    .range([0, width - margin]);
-
-  var yScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(dataColumn[0].values, d => d.urbanPopulation)])
-    .range([height - margin, 0]);
-
-  var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-  var svg = d3
-    .select("#linechart")
-    .append("svg")
-    .attr("width", width + margin + "px")
-    .attr("height", height + margin + "px")
-    .append("g")
-    .attr("transform", `translate(${margin}, ${margin})`);
-
-  var line = d3
-    .line()
-    .x(d => xScale(d.date))
-    .y(d => yScale(d.urbanPopulation));
-
-  let lines = svg.append("g").attr("class", "lines");
-
-  lines
-    .selectAll(".line-group")
-    .data(dataColumn)
+  
+  x.domain(data.map(function(d) { return d.timescale; }));
+  y.domain([0, d3.max(trends, function(c) {
+    return d3.max(c.values, function(v) {
+      return v.total;
+    });
+  })]);
+  
+  // Draw the legend
+  var legend = g.selectAll('g')
+    .data(trends)
+    .enter()
+    .append('g')
+    .attr('class', 'legend');
+  
+  legend.append('rect')
+    .attr('x', width - 20)
+    .attr('y', function(d, i) { return height / 2 - (i + 1) * 20; })
+    .attr('width', 10)
+    .attr('height', 10)
+    .style('fill', function(d) { return z(d.name); });
+  
+  legend.append('text')
+    .attr('x', width - 8)
+    .attr('y', function(d, i) { return height / 2 - (i + 1) * 20 + 10; })
+    .text(function(d) { return trendsText[d.name]; });
+  
+  // Draw the line
+  var trend = g.selectAll(".trend")
+    .data(trends)
     .enter()
     .append("g")
-    .attr("class", "line-group")
-    .on("mouseover", function(d, i) {
-      svg
-        .append("text")
-        .attr("class", "title-text")
-        .style("fill", color(i))
-        .text(d.CountryName)
-        .attr("text-anchor", "middle")
-        .attr("x", (width - margin) / 2)
-        .attr("y", 5);
-    })
-    .on("mouseout", function(d) {
-      svg.select(".title-text").remove();
-    })
-    .append("path")
+    .attr("class", "trend");
+  
+  trend.append("path")
     .attr("class", "line")
-    .attr("d", d => line(d.values))
-    .style("stroke", (d, i) => color(i))
-    .style("opacity", lineOpacity)
-    .on("mouseover", function(d) {
-      d3.selectAll(".line").style("opacity", otherLinesOpacityHover);
-      d3.selectAll(".circle").style("opacity", circleOpacityOnLineHover);
-      d3.select(this)
-        .style("opacity", lineOpacityHover)
-        .style("stroke-width", lineStrokeHover)
-        .style("cursor", "pointer");
-    })
-    .on("mouseout", function(d) {
-      d3.selectAll(".line").style("opacity", lineOpacity);
-      d3.selectAll(".circle").style("opacity", circleOpacity);
-      d3.select(this)
-        .style("stroke-width", lineStroke)
-        .style("cursor", "none");
-    });
-
-  lines
-    .selectAll("circle-group")
-    .data(dataColumn)
+    .attr("d", function(d) { return line(d.values); })
+    .style("stroke", function(d) { return z(d.name); });
+  
+  // Draw the empty value for every point
+  var points = g.selectAll('.points')
+    .data(trends)
     .enter()
-    .append("g")
-    .style("fill", (d, i) => color(i))
-    .selectAll("circle")
-    .data(d => d.values)
+    .append('g')
+    .attr('class', 'points')
+    .append('text');
+  
+  // Draw the circles
+  trend
+    .style("fill", "#FFF")
+    .style("stroke", function(d) { return z(d.name); })
+    .selectAll("circle.line")
+    .data(function(d){ return d.values })
     .enter()
-    .append("g")
-    .attr("class", "circle")
-    .on("mouseover", function(d) {
-      d3.select(this)
-        .style("cursor", "pointer")
-        .append("text")
-        .attr("class", "text")
-        .text(`${d.urbanPopulation}`)
-        .attr("x", d => xScale(d.date) + 5)
-        .attr("y", d => yScale(d.urbanPopulation) - 10);
-    })
-    .on("mouseout", function(d) {
-      d3.select(this)
-        .style("cursor", "none")
-        .transition()
-        .duration(duration)
-        .selectAll(".text")
-        .remove();
-    })
     .append("circle")
-    .attr("cx", d => xScale(d.date))
-    .attr("cy", d => yScale(d.urbanPopulation))
-    .attr("r", circleRadius)
-    .style("opacity", circleOpacity)
-    .on("mouseover", function(d) {
-      d3.select(this)
-        .transition()
-        .duration(duration)
-        .attr("r", circleRadiusHover);
-    })
-    .on("mouseout", function(d) {
-      d3.select(this)
-        .transition()
-        .duration(duration)
-        .attr("r", circleRadius);
-    });
+    .attr("r", 5)
+    .style("stroke-width", 3)
+    .attr("cx", function(d) { return x(d.timescale); })
+    .attr("cy", function(d) { return y(d.total); });
+  
+  // Draw the axis
+  g.append("g")
+    .attr("class", "axis axis-x")
+    .attr("transform", "translate(0, " + height + ")")
+    .call(d3.axisBottom(x));
+  
+  g.append("g")
+    .attr("class", "axis axis-y")
+    .call(d3.axisLeft(y).ticks(10));
+  
+  var focus = g.append('g')
+    .attr('class', 'focus')
+    .style('display', 'none');
+  
+  focus.append('line')
+    .attr('class', 'x-hover-line hover-line')
+    .attr('y1' , 0)
+    .attr('y2', height);
+  
+  svg.append('rect')
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    .attr("class", "overlay")
+    .attr("width", width)
+    .attr("height", height)
+    .on("mouseover", mouseover)
+    .on("mouseout", mouseout)
+    .on("mousemove", mousemove);
+  
+  var timeScales = data.map(function(name) { return x(name.timescale); });
 
-  var xAxis = d3.axisBottom(xScale).ticks(5);
-  var yAxis = d3.axisLeft(yScale).ticks(5);
+  function mouseover() {
+    focus.style("display", null);
+    d3.selectAll('.points text').style("display", null);
+  }
+  function mouseout() {
+    focus.style("display", "none");
+    d3.selectAll('.points text').style("display", "none");
+  }
+  function mousemove() {
+    var i = d3.bisect(timeScales, d3.mouse(this)[0], 1);
+    var di = data[i-1];
+    focus.attr("transform", "translate(" + x(di.timescale) + ",0)");
+    d3.selectAll('.points text')
+      .attr('x', function(d) { return x(di.timescale) + 15; })
+      .attr('y', function(d) { return y(d.values[i-1].total); })
+      .text(function(d) { return d.values[i-1].total; })
+      .style('fill', function(d) { return z(d.name); });
+  }
 
-  svg
-    .append("g")
-    .attr("class", "x axis")
-    .attr("transform", `translate(0, ${height - margin})`)
-    .call(xAxis);
-
-  svg
-    .append("g")
-    .attr("class", "y axis")
-    .call(yAxis)
-    .append("text")
-    .attr("y", 15)
-    .attr("transform", "rotate(-90)")
-    .attr("fill", "#000")
-    .text("Total values");
 }
 
-var dataColumn = [];
-var realData = {
-  CountryName: "",
-  values: []
-};
-var realData2 = {
-  CountryName: "",
-  values: []
-};
-function loadFirstField(worldBankData, country1) {
-  realData.CountryName = country1;
-  for (let i = 0; i < worldBankData.length; i++) {
-    // var jj={
-    //   date:"",
-    //   urbanPopulation:""
-    // }
-    if (worldBankData[i]["Year"] > 1990) {
-      if (worldBankData[i]["Country Name"] == country1) {
-        console.log("in if");
-        //realData.date.push(worldBankData[i]['Year']);
-        //realData.urbanPopulation.push(worldBankData[i]['Urban population (% of total)']);
+
+
+function loadLineChartData() {
+
+  var data = [
+    {
+      'timescale': '早', 
+      'totalAmount': 20, 
+      'totalProfit': 200, 
+      'totalRevenue': 400
+    },
+    {
+      'timescale': '午', 
+      'totalAmount': 40, 
+      'totalProfit': 300, 
+      'totalRevenue': 600
+    },
+    {
+      'timescale': '晚', 
+      'totalAmount': 70, 
+      'totalProfit': 100, 
+      'totalRevenue': 800
+    },
+    {
+      'timescale': '深夜', 
+      'totalAmount': 100, 
+      'totalProfit': 800, 
+      'totalRevenue': 900
+    }
+  ];
+
+  realData = { values : [], CountryName : country1 };
+  realData2 = { values: [], CountryName : country2 };
+
+  lineData = [{
+    'year': '2003',
+    'country1Value': '',
+    'country2Value': '',
+  }]
+
+  // dataColumn = [];
+
+  console.log(lineChartWorldBankData);
+  
+  for (let i = 0; i < lineChartWorldBankData.length; i++) {
+
+    if (lineChartWorldBankData[i]["Year"] > 1960) {
+
+      let _year = lineChartWorldBankData[i]["Year"];
+
+      if (lineChartWorldBankData[i]["Country Name"] == country1) {
         realData.values.push({
-          date: worldBankData[i]["Year"],
-          urbanPopulation: worldBankData[i]["Urban population (% of total)"]
+          date: lineChartWorldBankData[i]["Year"],
+          urbanPopulation: lineChartWorldBankData[i]["Urban population (% of total)"]
         });
       }
+
+      if (lineChartWorldBankData[i]["Country Name"] == country2) {
+        realData2.values.push({
+            date : lineChartWorldBankData[i]["Year"],
+            urbanPopulation: lineChartWorldBankData[i]["Urban population (% of total)"]
+        });
+      }
+
     }
   }
-  dataColumn.push(realData);
-  console.log(dataColumn);
-  loadSecondField(worldBankData, country2);
+
+  console.log([realData, realData2]);
+
+  // realData.forEach(
+  //   val => {
+
+  // } );
+
+  // dataColumn = [realData, realData2];
+  // console.log(dataColumn);
+
 }
 
-function loadSecondField(worldBankData, country2) {
-  realData2.CountryName = country2;
-  for (let i = 0; i < worldBankData.length; i++) {
-    var jj = {
-      date: "",
-      urbanPopulation: ""
-    };
-    if (worldBankData[i]["Year"] > 1990) {
-      if (worldBankData[i]["Country Name"] == country2) {
-        console.log("in if");
-        //realData2.date.push(worldBankData[i]['Year']);
-        //realData2.urbanPopulation.push(worldBankData[i]['Urban population (% of total)']);
-        jj.date = worldBankData[i]["Year"];
-        jj.urbanPopulation = worldBankData[i]["Urban population (% of total)"];
-        realData2.values.push(jj);
-      }
-    }
-  }
-  dataColumn.push(realData2);
-  console.log(dataColumn);
-}
