@@ -6,6 +6,8 @@ $(window).on("load", function() {
 var country1 = "China";
 var country2 = "United Kingdom";
 var lineChartWorldBankData = {};
+var minYearLineChart = "1960";
+var maxYearLineChart = "1990";
 
 var number = 123;
 var year = 1992;
@@ -187,7 +189,6 @@ var m = svg
   .attr("transform", "translate(15,200)")
   .append("text");
 
-
 // Global WorldBankData object for Line Chart
 var lineChartWorldBankData = {};
 
@@ -197,7 +198,7 @@ function ready(error, topo, dataset, worldBankData) {
   cleanedWorldBankData = filterTopData(worldBankData);
   renderPieChart(cleanedWorldBankData);
   renderBarChart(cleanedWorldBankData);
-  readLineChart(lineChartWorldBankData);
+  updateLineChart(lineChartWorldBankData);
 }
 
 function filterTopData(worldBankData) {
@@ -722,79 +723,126 @@ function countryInput2Changed(e) {
 // )
 // .await(readyline);
 
+var slider = document.getElementById("lineChartSlider");
+
+noUiSlider.create(slider, {
+  start: [1960, 1990],
+  connect: true,
+  step: 5,
+  // padding: 10,
+  tooltips: [wNumb({ decimals: 0 }), wNumb({ decimals: 0 })],
+  pips: {
+    mode: "range",
+    stepped: true,
+    values: [
+      1960,
+      1965,
+      1970,
+      1975,
+      1980,
+      1985,
+      1990,
+      1995,
+      2000,
+      2005,
+      2010,
+      2015
+    ],
+
+    density: 20
+  },
+  range: {
+    min: 1960,
+    max: 2015
+  }
+});
+
+function doSomething(values, handle, unencoded, tap, positions) {
+  // values: Current slider values (array);
+  // handle: Handle that caused the event (number);
+  // unencoded: Slider values without formatting (array);
+  // tap: Event was caused by the user tapping the slider (boolean);
+  // positions: Left offset of the handles (array);
+
+  minYearLineChart = parseInt(values[0]);
+  maxYearLineChart = parseInt(values[1]);
+
+  console.log(minYearLineChart, maxYearLineChart);
+
+  console.log(values, handle, unencoded, tap, positions);
+  renderLineChart(country1, country2, minYearLineChart, maxYearLineChart);
+}
+
+slider.noUiSlider.on("change", doSomething);
+
+
 function updateLineChart() {
   console.log(country1, country2);
   if (country1 && country2)
-    readLineChart(country1, country2);
+    renderLineChart(country1, country2, minYearLineChart, maxYearLineChart);
 }
 
-function readLineChart(country1, country2) {
-
-  // document.getElementById('linechart').innerHTML = "";
-
-  var data = [
-    {
-      'timescale': '早', 
-      'totalAmount': 20, 
-      'totalProfit': 200, 
-      'totalRevenue': 400
-    },
-    {
-      'timescale': '午', 
-      'totalAmount': 40, 
-      'totalProfit': 300, 
-      'totalRevenue': 600
-    },
-    {
-      'timescale': '晚', 
-      'totalAmount': 70, 
-      'totalProfit': 100, 
-      'totalRevenue': 800
-    },
-    {
-      'timescale': '深夜', 
-      'totalAmount': 100, 
-      'totalProfit': 800, 
-      'totalRevenue': 900
-    }
-  ];
+function renderLineChart(
+  country1,
+  country2,
+  minYearLineChart,
+  maxYearLineChart
+) {
+  document.getElementById("linechart").innerHTML =
+    "<svg width='1300' height='500'></svg>";
 
   console.log(lineChartWorldBankData);
   console.log("readline function");
 
-  if(!country1 || !country2) {
-    country1 = 'China';
-    country2 = 'United Kingdom';
-  } ;
+  if (!country1 || !country2) {
+    country1 = "China";
+    country2 = "United Kingdom";
+  }
 
-  loadLineChartData();
+  var data = [];
 
-  var trendsText = {'totalAmount': '銷售數量', 'totalProfit': '總收入金額', 'totalRevenue': '總分潤金額'};
-  
+  data = loadLineChartData();
+
+  var trendsText = {
+    date: "date",
+    country1Population: country1,
+    country2Population: country2
+  };
+
   // set the dimensions and margins of the graph
   var margin = { top: 20, right: 80, bottom: 30, left: 50 },
-      linechartElem = document.getElementById('linechart2')
-      svg = d3.select('#linechart svg'),
-      width = +svg.attr('width') - margin.left - margin.right,
-      height = +svg.attr('height') - margin.top - margin.bottom;
-  var g = svg.append("g")
+    svg = d3.select("#linechart svg"),
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom;
+  var g = svg
+    .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  
+
   // set the ranges
-  var x = d3.scaleBand().rangeRound([0, width]).padding(1),
-      y = d3.scaleLinear().rangeRound([height, 0]),
-      z = d3.scaleOrdinal(['#036888','#0D833C','#D2392A']);
-  
+  var x = d3
+      .scaleBand()
+      .rangeRound([0, width])
+      .padding(1),
+    y = d3.scaleLinear().rangeRound([height, 0]),
+    z = d3.scaleOrdinal(["#036888", "#0D833C", "#D2392A"]);
+
   // define the line
-  var line = d3.line()
-    .x(function(d) { return x(d.timescale); })
-    .y(function(d) { return y(d.total); });
-  
+  var line = d3
+    .line()
+    .x(function(d) {
+      return x(d.timescale);
+    })
+    .y(function(d) {
+      return y(d.total);
+    });
+
   // scale the range of the data
-  z.domain(d3.keys(data[0]).filter(function(key) {
-    return key !== "timescale";
-  }));
-  
+  z.domain(
+    d3.keys(data[0]).filter(function(key) {
+      return key !== "timescale";
+    })
+  );
+
   var trends = z.domain().map(function(name) {
     return {
       name: name,
@@ -806,86 +854,126 @@ function readLineChart(country1, country2) {
       })
     };
   });
-  
-  x.domain(data.map(function(d) { return d.timescale; }));
-  y.domain([0, d3.max(trends, function(c) {
-    return d3.max(c.values, function(v) {
-      return v.total;
-    });
-  })]);
-  
+
+  x.domain(
+    data.map(function(d) {
+      return d.timescale;
+    })
+  );
+  y.domain([
+    d3.min(trends, function(c) {
+      return d3.min(c.values, function(v) {
+        return v.total;
+      });
+    }),
+    d3.max(trends, function(c) {
+      return d3.max(c.values, function(v) {
+        return v.total;
+      });
+    })
+  ]);
+
   // Draw the legend
-  var legend = g.selectAll('g')
+  var legend = g
+    .selectAll("g")
     .data(trends)
     .enter()
-    .append('g')
-    .attr('class', 'legend');
-  
-  legend.append('rect')
-    .attr('x', width - 20)
-    .attr('y', function(d, i) { return height / 2 - (i + 1) * 20; })
-    .attr('width', 10)
-    .attr('height', 10)
-    .style('fill', function(d) { return z(d.name); });
-  
-  legend.append('text')
-    .attr('x', width - 8)
-    .attr('y', function(d, i) { return height / 2 - (i + 1) * 20 + 10; })
-    .text(function(d) { return trendsText[d.name]; });
-  
+    .append("g")
+    .attr("class", "legend");
+
+  legend
+    .append("rect")
+    .attr("x", width - 20)
+    .attr("y", function(d, i) {
+      return height / 2 - (i + 1) * 20;
+    })
+    .attr("width", 10)
+    .attr("height", 10)
+    .style("fill", function(d) {
+      return z(d.name);
+    });
+
+  legend
+    .append("text")
+    .attr("x", width - 8)
+    .attr("y", function(d, i) {
+      return height / 2 - (i + 1) * 20 + 10;
+    })
+    .text(function(d) {
+      return trendsText[d.name];
+    });
+
   // Draw the line
-  var trend = g.selectAll(".trend")
+  var trend = g
+    .selectAll(".trend")
     .data(trends)
     .enter()
     .append("g")
     .attr("class", "trend");
-  
-  trend.append("path")
+
+  trend
+    .append("path")
     .attr("class", "line")
-    .attr("d", function(d) { return line(d.values); })
-    .style("stroke", function(d) { return z(d.name); });
-  
+    .attr("d", function(d) {
+      return line(d.values);
+    })
+    .style("stroke", function(d) {
+      return z(d.name);
+    });
+
   // Draw the empty value for every point
-  var points = g.selectAll('.points')
+  var points = g
+    .selectAll(".points")
     .data(trends)
     .enter()
-    .append('g')
-    .attr('class', 'points')
-    .append('text');
-  
+    .append("g")
+    .attr("class", "points")
+    .append("text");
+
   // Draw the circles
   trend
     .style("fill", "#FFF")
-    .style("stroke", function(d) { return z(d.name); })
+    .style("stroke", function(d) {
+      return z(d.name);
+    })
     .selectAll("circle.line")
-    .data(function(d){ return d.values })
+    .data(function(d) {
+      return d.values;
+    })
     .enter()
     .append("circle")
     .attr("r", 5)
     .style("stroke-width", 3)
-    .attr("cx", function(d) { return x(d.timescale); })
-    .attr("cy", function(d) { return y(d.total); });
-  
+    .attr("cx", function(d) {
+      return x(d.timescale);
+    })
+    .attr("cy", function(d) {
+      return y(d.total);
+    });
+
   // Draw the axis
   g.append("g")
     .attr("class", "axis axis-x")
     .attr("transform", "translate(0, " + height + ")")
     .call(d3.axisBottom(x));
-  
+
   g.append("g")
     .attr("class", "axis axis-y")
     .call(d3.axisLeft(y).ticks(10));
-  
-  var focus = g.append('g')
-    .attr('class', 'focus')
-    .style('display', 'none');
-  
-  focus.append('line')
-    .attr('class', 'x-hover-line hover-line')
-    .attr('y1' , 0)
-    .attr('y2', height);
-  
-  svg.append('rect')
+
+  var focus = g
+    .append("g")
+    .attr("class", "focus")
+    .style("display", "none");
+
+  focus
+    .append("line")
+    .attr("class", "x-hover-line hover-line")
+    .attr("y1", 0)
+    .attr("y2", height);
+
+  svg
+    .append("rect")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
     .attr("class", "overlay")
     .attr("width", width)
@@ -893,98 +981,97 @@ function readLineChart(country1, country2) {
     .on("mouseover", mouseover)
     .on("mouseout", mouseout)
     .on("mousemove", mousemove);
-  
-  var timeScales = data.map(function(name) { return x(name.timescale); });
+
+  var timeScales = data.map(function(name) {
+    return x(name.timescale);
+  });
 
   function mouseover() {
     focus.style("display", null);
-    d3.selectAll('.points text').style("display", null);
+    d3.selectAll(".points text").style("display", null);
   }
   function mouseout() {
     focus.style("display", "none");
-    d3.selectAll('.points text').style("display", "none");
+    d3.selectAll(".points text").style("display", "none");
   }
   function mousemove() {
     var i = d3.bisect(timeScales, d3.mouse(this)[0], 1);
-    var di = data[i-1];
+    var di = data[i - 1];
     focus.attr("transform", "translate(" + x(di.timescale) + ",0)");
-    d3.selectAll('.points text')
-      .attr('x', function(d) { return x(di.timescale) + 15; })
-      .attr('y', function(d) { return y(d.values[i-1].total); })
-      .text(function(d) { return d.values[i-1].total; })
-      .style('fill', function(d) { return z(d.name); });
+    d3.selectAll(".points text")
+      .attr("x", function(d) {
+        return x(di.timescale) + 15;
+      })
+      .attr("y", function(d) {
+        return y(d.values[i - 1].total);
+      })
+      .text(function(d) {
+        return d.values[i - 1].total;
+      })
+      .style("fill", function(d) {
+        return z(d.name);
+      });
   }
 
 }
 
-
-
 function loadLineChartData() {
 
-  var data = [
-    {
-      'timescale': '早', 
-      'totalAmount': 20, 
-      'totalProfit': 200, 
-      'totalRevenue': 400
-    },
-    {
-      'timescale': '午', 
-      'totalAmount': 40, 
-      'totalProfit': 300, 
-      'totalRevenue': 600
-    },
-    {
-      'timescale': '晚', 
-      'totalAmount': 70, 
-      'totalProfit': 100, 
-      'totalRevenue': 800
-    },
-    {
-      'timescale': '深夜', 
-      'totalAmount': 100, 
-      'totalProfit': 800, 
-      'totalRevenue': 900
-    }
-  ];
-
-  realData = { values : [], CountryName : country1 };
-  realData2 = { values: [], CountryName : country2 };
-
-  lineData = [{
-    'year': '2003',
-    'country1Value': '',
-    'country2Value': '',
-  }]
-
-  // dataColumn = [];
+  realData = { values: [], CountryName: country1 };
+  realData2 = { values: [], CountryName: country2 };
 
   console.log(lineChartWorldBankData);
-  
+
+  let criteria = 'Population growth (annual %)';
+
   for (let i = 0; i < lineChartWorldBankData.length; i++) {
-
-    if (lineChartWorldBankData[i]["Year"] > 1960) {
-
-      let _year = lineChartWorldBankData[i]["Year"];
-
+    if (
+      lineChartWorldBankData[i]["Year"] > minYearLineChart &&
+      lineChartWorldBankData[i]["Year"] < maxYearLineChart
+    ) {
       if (lineChartWorldBankData[i]["Country Name"] == country1) {
         realData.values.push({
           date: lineChartWorldBankData[i]["Year"],
-          urbanPopulation: lineChartWorldBankData[i]["Urban population (% of total)"]
+          urbanPopulation:
+            lineChartWorldBankData[i][criteria]
         });
       }
 
       if (lineChartWorldBankData[i]["Country Name"] == country2) {
         realData2.values.push({
-            date : lineChartWorldBankData[i]["Year"],
-            urbanPopulation: lineChartWorldBankData[i]["Urban population (% of total)"]
+          date: lineChartWorldBankData[i]["Year"],
+          urbanPopulation:
+            lineChartWorldBankData[i][criteria]
         });
       }
-
     }
   }
 
+  var _lineData = [];
+
   console.log([realData, realData2]);
+
+  realData["values"].forEach(val => {
+    realData2["values"].forEach(val2 => {
+      if (val.date === val2.date) {
+        _lineData.push({
+          timescale: val.date,
+          country1Population: val.urbanPopulation,
+          country2Population: val2.urbanPopulation
+        });
+      }
+    });
+  });
+  console.log(_lineData);
+
+  sorted = _lineData
+    .sort((a, b) =>
+      d3.ascending(parseInt(a['timescale']), parseInt(b['timescale']))
+    );
+
+  console.log(sorted);
+
+  return _lineData;
 
   // realData.forEach(
   //   val => {
@@ -993,6 +1080,5 @@ function loadLineChartData() {
 
   // dataColumn = [realData, realData2];
   // console.log(dataColumn);
-
 }
 

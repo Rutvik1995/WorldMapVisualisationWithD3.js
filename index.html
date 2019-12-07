@@ -13,7 +13,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.js"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="nouislider.js"></script>
+    <script src="wNumb.min.js"></script>
+
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -24,6 +26,7 @@
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   
+  <link rel="stylesheet" href="nouislider.css" />
     <link rel="stylesheet" href="style.css" />
     <!-- <link
       rel="stylesheet"
@@ -39,11 +42,42 @@
   
       <!-- <br> -->
       <!-- <input type="button" class="btn btn-info" value="View Animation" onclick="addInterval()"> -->
+
+      <header class="masthead main-banner">
+          <div class="container">
+            <div style="padding-top: 2%;">
+              <div class="row">
+                    <div class="col-8 offset-md-2">
+                        <div class="main-banner-text">
+                            <div class="text-center">
+                                <br>
+                                <br>
+                                  <h1 class="">World Climate Change</h1>
+                                  <p>Factors affecting climate change around the world</p>
+                                  <p>CSC196v - Final Project</p>
+                              </div>
+
+                          <p>
+                            Climate change is one of the most important issue the world is facing right now.</p>
+                          <p>
+                              This visualization provides us with top countries which produces the highest proportions of harmful gases in the atmosphere. The slider value represents year and for each selected year data is populated in three different chart ( World Map, BarChart and Pie Charts ).
+                          </p>
+                          <p>
+                              The world map shows the counties which emits the maximum number of CO2, NO2, greenhouse gases in the air.</p>
+                          <p>
+                              The pie, bar chart shows the top 8 counties around the world which emits highest amount of dangerous gases in the atmosphere. We have use the color encoding to represent different countries and exact value emitted by the counties is also shown next to the country name.
+                          </p>
+                        </div>
+                      </div>
+                        <!-- <div class="col-4">
+                            <img src="http://media-s3-us-east-1.ceros.com/business-insider/images/2017/12/08/f7e1c323169d464797c86b950ea93eca/bi-graphics-02-greenhouse-gas-effect-warmed.gif"   style="height: 300px; width: 100%;">
+                        </div> -->
+                </div>
+            </div>
+          </div>
+        </header>
   
-      <div class="top-banner text-center">
-        <h2 class="">World Climate Change</h2>
-        <p>CSC196v - Interactive Visualization Assignment</p>
-      </div>
+    
       <div class="container-fluid">
         <div class="row">
           <!-- Controls -->
@@ -100,7 +134,7 @@
   
                   
             <button type="button" id="buttonStart" class="start-animation-btn" onclick="addInterval()">Start Animation</button>
-            <button type="button" id="buttonStart" data-toggle="modal" class="start-description-btn"  data-target=".bd-example-modal-lg" >Description</button>  
+            
             <button type="button" class="btn btn-danger btn-sm" id="buttonStop" style="display:none;" onclick="StopInterval()"> Stop Animation </button>
           </div>
               
@@ -131,109 +165,117 @@
               
 
             </div>
+            
             <div class="col-sm-12">
-                <div class="country-inputs">
-                  <div id="countryInput1">
-                    <select name="countryInput1" onchange="countryInput1Changed(this)">
-                      <option value="India">India</option>
-                      <option value="China" selected>China</option>
-                      <option value="Russian Federation">Russian Federation</option>
-                      <option value="Japan">Japan</option>
-                      <option value="Germany">Germany</option>
-                      <option value="United Kingdom">United Kingdom</option>
-                    </select>                      
-                  </div>
-                  <div id="countryInput2">
-                      <select name="countryInput2" onchange="countryInput2Changed(this)">
-                          <option value="United Kingdom" selected>United Kingdom</option>
-                          <option value="China">China</option>
-                          <option value="Russian Federation">Russian Federation</option>
-                          <option value="Japan">Japan</option>
-                          <option value="Germany">Germany</option>
-                        </select>
-                  </div>
+                
+                <div class="linechart-container">
+                  <h2>Comparing Data between two countries</h2>
+                  <p>The line chart shows comparison of the increasing and decreasing trend for any two countries compared on a 'percentage population growth' basis. Years can be selected from 1960-2015</p>
+                  <div class="linechart-controls-wrapper">
+                      <div class="country-inputs">
+                        <label for="" class="countries-select-label">Select countries to compare</label>
+                          <div id="countryInput1">
+                            <select name="countryInput1" onchange="countryInput1Changed(this)">
+                                <option value="China" selected>China</option>
+                              <option value="India">India</option>
+                              <option value="Russian Federation">Russian Federation</option>
+                              <option value="Japan">Japan</option>
+                              <option value="Germany">Germany</option>
+                              <option value="United Kingdom">United Kingdom</option>
+                              <option value="United States">United States</option>
+                            </select>                      
+                          </div>
+                          <div id="countryInput2">
+                              <select name="countryInput2" onchange="countryInput2Changed(this)">
+                                  <option value="China">China</option>
+                                  <option value="Russian Federation">Russian Federation</option>
+                                  <option value="Japan">Japan</option>
+                                  <option value="United Kingdom" selected>United Kingdom</option>
+                                  <option value="Germany">Germany</option>
+                                  <option value="India">India</option>
+                                  <option value="United States">United States</option>
+                                </select>
+                          </div>
+                        </div>
+                        <div class="linechart-slider-wrapper">
+                          <label for="lineChartSlider" class="lineChartSliderLabel">Select Year Range</label>
+                          <div id="lineChartSlider"></div>
+                        </div>
+                        
+                      </div>
+                  <div id="linechart"></div>
                 </div>
-                <div id="linechart">
-                  <svg width="960" height="500"></svg>
-                </div>
+
+
               </div>
           </div>
+          <hr>
+          <div class="container-fluid" >
+              <div class="row">
+                  
+                  <div class="col-12">
+                    <h2 style="margin-top: 50px; text-align: center;">% of electricity generated from different resources from year 2006 to 2017</h2>
+                        <p class="text-center">
+                            This visualization provides information about the percentage of electricity generated from different resources from the year 2006 to 2017.
+                        </p>
+                  </div>
+                  <div class="col-12">
+                      <img src="static.png" style="height: auto; width: 100%; ">
+                  </div>
+                </div>
+            </div>
         </div>
       </div>
       <hr />
-     
-  
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="myModal">
-                <div class="modal-dialog modal-dialog-scrollable" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class=" modal-title" id="exampleModalScrollableTitle"><span class="text-center" >Welcome</span></h5>
-                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
+
+              <header class="masthead">
+                  <div class="container">
+                    <div class="text-center">
+                      <br>
+                      <br>
+                      <h2>Ending Summary</h2>
+                      <br>
+                      <br>
+                        
                     </div>
-                    <div class="modal-body">
-                      <h6>Dataset</h6>
-                      <p>The dataset we have selected is "World Climate Change". The dataset contains information about the factors (Co2,No2 ETC) which affect climate change around the world.</p>
-                      <p>This visualisation provides us with top countries which has the highest proportions of harmful gases in their atmosphere.
-                       The slider value represents or selects a particular year and for each selected slider position value , the 3 charts -World Map, BarChart, Pie Charts change in value.</p>
-                      <p> Color coding is used to code different countries .
-                        Also we have automated and animated the sliding motion of (year) slider and it shows in a brief 5 seconds ,the gas proportions changes across the globe, with the change in slider for that year.
-                       For the World Map ,color 'Orange' represents the maximum level of gas concentration and 'white' represents minimum level.
-                       </p>
-                        <br><u>Team and Work Distribution</u><br>
-                       <p>Rutvik Patel => (33%)<br>
-                          Suraj Rawat => (33%) <br>
-                          Gaurav Bora => (33%) <br>
-                       Final Contribution =33 +33 +33 +1%(Write-Up)=100%
-                         <br><b>Thing we learned -><b><br>
-                       1)Completed World Map Rendereing.<br>
-                       2)Scaling world map.<br>
-                       3)Added legends for the map and used proper color coding.<br>
-                       4)Worked on Tool-Tip.<br> 
-                       5)More Interactivity via mouse,slider etc.<br>
-                       6)Best Work -Introducing animation. Displaying yearly changes in smooth transition from year 1992 - 2012 and showing yearly data for harmful gases across the globe.<br>
-                       <br>
-                       </p>
-                      <hr>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <div style="padding-top: 2%;">
+                      <div class="row">
+                            <div class="col-8">
+                                <div style=" font-size: 17px; font-family: sans-serif;">
+
+                                  <p>
+                                    <b>Things Learned</b><br/>
+                                    <ul>
+                                      <li>World Map Rendering</li>
+                                      <li>Scaling world map</li>
+                                      <li>Added legends for the map and used proper color coding</li>
+                                      <li>Introducing animation. Displaying yearly changes in smooth transition from year 1992 - 2012 and showing yearly data for harmful gases across the globe.</li>
+                                      <li>Working with different charts ( Pie, Line, Bar ) </li>
+                                    </ul>
+                                    
+                                  </p>
+                                  
+                                  The data source:
+                            <a href="https://github.com/ZeningQu/World-Bank-Data-by-Indicators/tree/master/climate-change">https://github.com/ZeningQu/World-Bank-Data-by-Indicators/tree/master/climate-change</a>
+        
+                                  <p>
+                                    <br>
+                                    <b>Created by</b>
+                                    <ul>
+                                        <li>Rutvik Patel</li>
+                                        <li>Suraj Rawat</li>
+                                        <li>Gaurav Bora</li>
+                                      </ul>
+                                  </p>
+                                </div>
+                              </div>
+                                <div class="col-4">
+                                    <img src="https://media0.giphy.com/media/3og0ICPKKVBPRFcDeM/source.gif"   style="height: 300px; width: 100%;">
+                                </div>
+                        </div>
                     </div>
                   </div>
-                </div>
-              </div>
-  
-         <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="myModalIntro">
-                <div class="modal-dialog modal-dialog-scrollable" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class=" modal-title" id="exampleModalScrollableTitle"><span class="text-center" >Welcome</span></h5>
-                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <h6><I>Morning Everyone,</I></h6> 
-                      <b><p font-size="50px">"There's one issue that will define contours of this century more dramatically than any other, 
-                        and that is urgent threat of changing climate" - <strong>Barack Obama(Former President of U.S.A)<strong></b>
-                      </p>
-                      </p>
-                      <hr>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-primary" data-dismiss="modal">Proceed</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- <div class="container-fluid">
-                  <img src="StaticPercentageOfRenewableEnergy.png" style="height: auto; width: 990px;">
-              </div> -->
-
-
-              <!-- <footer class="text-center"><p>Submitted By: Rutvik Patel, Suraj Rawat, Gaurav Bora</p></footer> -->
+                </header>
   
       <script src="script.js"></script>
 
