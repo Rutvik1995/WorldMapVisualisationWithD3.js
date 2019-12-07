@@ -15,7 +15,7 @@ var timeInterval;
 var downDownValue = "CO2 emissions (kt)";
 var output_year = document.getElementById("yy");
 var toolTipValue = "CO2 emissions (kt)";
-//console.log(output_year);
+//
 var yearVisedata = {};
 var yearAuto = 1991;
 
@@ -87,7 +87,7 @@ function StopInterval() {
 }
 
 function changeSlider() {
-  // console.log("trigger");
+  //
 }
 
 document.getElementById("yr").addEventListener("change", function() {
@@ -111,7 +111,7 @@ function myFunction() {
   downDownValue = document.getElementById("mySelect").value;
   yearAuto = 1991;
 
-  //  console.log(downDownValue);
+  //
   if (downDownValue == "CO2 emissions (kt)") {
     toolTipValue = "CO2 emissions (kt)";
   } else if (downDownValue == "Methane emissions (kt of CO2 equivalent)") {
@@ -262,16 +262,16 @@ function filterTopData(worldBankData) {
       d3.descending(parseInt(a[sortIndex]), parseInt(b[sortIndex]))
     );
   // for each element in worldBankData if the country name is in nonCountyArrays[] do not add it to cleaned array
-  // console.log(year);
+  //
   cleanedWorldBankData = [];
 
   sortedWorldBankData.forEach(element => {
-    // console.log(element["Year"]);
+    //
     if (
       element["Year"] == year &&
       !nonCountryArray.includes(element["Country Name"])
     ) {
-      // console.log(element["Country Name"]);
+      //
       return cleanedWorldBankData.push(element); // filter remove
     }
   });
@@ -286,8 +286,6 @@ function filterTopData(worldBankData) {
     });
   }
 
-  console.log(dataForCharts);
-
   return dataForCharts;
 }
 
@@ -295,7 +293,7 @@ function renderMap(topo, worldBankData) {
   let count = 0;
   let maxValueCo2 = 0;
   let countries = topo.features;
-  //  console.log(year);
+  //
   for (let i = 0; i < worldBankData.length; i++) {
     if (worldBankData[i].Year == year) {
       if (worldBankData[i][downDownValue] > maxValueCo2) {
@@ -358,14 +356,14 @@ function renderMap(topo, worldBankData) {
     .on("mouseover", function(d) {
       let t = d.id;
       let hoverData = null;
-      // console.log(t);
+      //
       for (var i = 0; i < worldBankData.length; i++) {
         if (worldBankData[i].Year == year) {
           if (worldBankData[i]["Country Code"] == t) {
-            //console.log("yes");
-            //console.log(worldBankData[i]);
+            //
+            //
             hoverData = worldBankData[i];
-            //console.log(hoverData);
+            //
             tooltip
               .style("opacity", 0.8)
               .html(
@@ -707,13 +705,13 @@ var dataColumn, realData, realData2;
 
 function countryInput1Changed(e) {
   country1 = e.value;
-  console.log(e.value);
+
   updateLineChart();
 }
 
 function countryInput2Changed(e) {
   country2 = e.value;
-  console.log(e.value);
+
   updateLineChart();
 }
 
@@ -767,17 +765,12 @@ function doSomething(values, handle, unencoded, tap, positions) {
   minYearLineChart = parseInt(values[0]);
   maxYearLineChart = parseInt(values[1]);
 
-  console.log(minYearLineChart, maxYearLineChart);
-
-  console.log(values, handle, unencoded, tap, positions);
   renderLineChart(country1, country2, minYearLineChart, maxYearLineChart);
 }
 
 slider.noUiSlider.on("change", doSomething);
 
-
 function updateLineChart() {
-  console.log(country1, country2);
   if (country1 && country2)
     renderLineChart(country1, country2, minYearLineChart, maxYearLineChart);
 }
@@ -790,9 +783,6 @@ function renderLineChart(
 ) {
   document.getElementById("linechart").innerHTML =
     "<svg width='1300' height='500'></svg>";
-
-  console.log(lineChartWorldBankData);
-  console.log("readline function");
 
   if (!country1 || !country2) {
     country1 = "China";
@@ -1012,17 +1002,13 @@ function renderLineChart(
         return z(d.name);
       });
   }
-
 }
 
 function loadLineChartData() {
-
   realData = { values: [], CountryName: country1 };
   realData2 = { values: [], CountryName: country2 };
 
-  console.log(lineChartWorldBankData);
-
-  let criteria = 'Population growth (annual %)';
+  let criteria = "Population growth (annual %)";
 
   for (let i = 0; i < lineChartWorldBankData.length; i++) {
     if (
@@ -1032,24 +1018,20 @@ function loadLineChartData() {
       if (lineChartWorldBankData[i]["Country Name"] == country1) {
         realData.values.push({
           date: lineChartWorldBankData[i]["Year"],
-          urbanPopulation:
-            lineChartWorldBankData[i][criteria]
+          urbanPopulation: lineChartWorldBankData[i][criteria]
         });
       }
 
       if (lineChartWorldBankData[i]["Country Name"] == country2) {
         realData2.values.push({
           date: lineChartWorldBankData[i]["Year"],
-          urbanPopulation:
-            lineChartWorldBankData[i][criteria]
+          urbanPopulation: lineChartWorldBankData[i][criteria]
         });
       }
     }
   }
 
   var _lineData = [];
-
-  console.log([realData, realData2]);
 
   realData["values"].forEach(val => {
     realData2["values"].forEach(val2 => {
@@ -1062,14 +1044,10 @@ function loadLineChartData() {
       }
     });
   });
-  console.log(_lineData);
 
-  sorted = _lineData
-    .sort((a, b) =>
-      d3.ascending(parseInt(a['timescale']), parseInt(b['timescale']))
-    );
-
-  console.log(sorted);
+  sorted = _lineData.sort((a, b) =>
+    d3.ascending(parseInt(a["timescale"]), parseInt(b["timescale"]))
+  );
 
   return _lineData;
 
@@ -1079,6 +1057,5 @@ function loadLineChartData() {
   // } );
 
   // dataColumn = [realData, realData2];
-  // console.log(dataColumn);
+  //
 }
-
